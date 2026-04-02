@@ -20,4 +20,8 @@ public class Pet {
 	private String name;
 	private String species;
 	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
+
+	@ManyToOne
+	@JoinColumn(name = "user_id") // Clé étrangère vers la table users
+	private User owner;
 }
