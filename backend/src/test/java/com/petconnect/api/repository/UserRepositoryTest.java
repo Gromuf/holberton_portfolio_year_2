@@ -24,7 +24,7 @@ public class UserRepositoryTest {
 	void shouldSaveUserWithPets() {
 		// 1. Créer un utilisateur
 		User louis = new User();
-		louis.setEmail("louis@test.com");
+		louis.setEmail("repo-test@test.com");
 		louis.setName("Louis");
 		louis.setPassword("secure123");
 
