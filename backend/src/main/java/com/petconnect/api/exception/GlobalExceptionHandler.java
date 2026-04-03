@@ -1,5 +1,6 @@
 package com.petconnect.api.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,6 +26,15 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    // Attrape les erreurs de contrainte SQL (ex: Email déjà utilisé)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        // On renvoie un message clair pour le front-end
+        errors.put("error", "Database conflict: This email might already be in use.");
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

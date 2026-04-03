@@ -52,4 +52,48 @@ public class UserControllerTest {
 		mockMvc.perform(get("/api/users"))
 				.andExpect(status().isOk());
 	}
+
+	@Test
+	void testCreateUserWithInvalidData() throws Exception {
+		String invalidUserJson = """
+				{
+				"name": "",
+				"email": "pas-un-email",
+				"password": "123"
+				}
+				""";
+
+		mockMvc.perform(post("/api/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(invalidUserJson))
+				.andExpect(status().isBadRequest()) // Vérifie le code 400
+				.andExpect(jsonPath("$.name").value("Name is required"))
+				.andExpect(jsonPath("$.password").value("Password must be at least 6 characters long"));
+	}
+
+	@Test
+	void testCreateDuplicateUserEmail() throws Exception {
+		String userJson = """
+				{
+				"name": "Louis",
+				"email": "unique@test.com",
+				"password": "password123"
+				}
+				""";
+
+		// Premier enregistrement : OK
+		mockMvc.perform(post("/api/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(userJson))
+				.andExpect(status().isOk());
+
+		// Deuxième enregistrement avec le même email : Doit échouer
+		mockMvc.perform(post("/api/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(userJson))
+				.andExpect(status().isBadRequest()); 
+				// Note : Si tu n'as pas encore géré DataIntegrityViolationException 
+				// dans ton ExceptionHandler, ce test pourrait renvoyer une 500. 
+				// C'est un bon moyen de vérifier !
+	}
 }

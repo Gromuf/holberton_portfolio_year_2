@@ -71,4 +71,21 @@ public class PetControllerTest {
 				.content(jsonRequest))
 				.andExpect(status().isOk());
 	}
+
+	@Test
+	void testCreatePetWithoutOwnerShouldFail() throws Exception {
+		// JSON sans le champ "owner"
+		String invalidJson = """
+				{
+				"name": "Rex",
+				"species": "Chien",
+				"isWalking": false
+				}
+				""";
+
+		mockMvc.perform(post("/api/pets")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(invalidJson))
+				.andExpect(status().isBadRequest()); // On attend une erreur 400 !
+	}
 }

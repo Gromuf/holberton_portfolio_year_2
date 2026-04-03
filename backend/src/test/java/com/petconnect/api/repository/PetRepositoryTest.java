@@ -29,6 +29,7 @@ public class PetRepositoryTest {
 		User owner = new User();
 		owner.setName("Proprio");
 		owner.setEmail("proprio@test.com");
+		owner.setPassword("pass123");
 		userRepository.save(owner);
 
 		// 2. Création de deux chiens
