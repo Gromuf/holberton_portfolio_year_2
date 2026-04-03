@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class PetController {
 	}
 
 	@PostMapping
-	public Pet createPet(@RequestBody Pet pet) {
+	public Pet createPet(@Valid @RequestBody Pet pet) {
 		return petService.savePet(pet);
 	}
 }
