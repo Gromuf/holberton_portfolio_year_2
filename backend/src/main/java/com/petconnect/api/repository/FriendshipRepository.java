@@ -13,4 +13,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
 	// Check if a friendship already exists between two pets
 	boolean existsByPet1AndPet2(Pet pet1, Pet pet2);
+
+	// Check if a friendship with a specific status already exists between two pets
+	boolean existsByPet1AndPet2AndStatus(Pet pet1, Pet pet2, String status);
 }
