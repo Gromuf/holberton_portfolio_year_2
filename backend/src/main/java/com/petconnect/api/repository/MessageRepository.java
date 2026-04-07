@@ -14,4 +14,12 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
 	// Find all messages received by a pet, ordered by sentAt descending
 	List<Message> findByReceiverPetOrderBySentAtDesc(Pet receiver);
+
+	/**
+     * Récupère l'historique complet (A -> B ET B -> A).
+     * Spring génère une requête SQL avec un OR pour croiser les expéditeurs et destinataires.
+     * Note : Pour l'utiliser, on passe souvent les mêmes animaux mais inversés :
+     * repository.findBy...(rex, koziz, koziz, rex);
+     */
+	List<Message> findBySenderPetAndReceiverPetOrSenderPetAndReceiverPetOrderBySentAtAsc(Pet sender1, Pet receiver1, Pet sender2, Pet receiver2);
 }
