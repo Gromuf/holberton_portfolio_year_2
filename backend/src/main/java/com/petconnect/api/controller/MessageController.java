@@ -20,7 +20,10 @@ public class MessageController {
 
 	@PostMapping("/send")
 	public Message sendMessage(@RequestBody Message message) {
-		return messageService.sendMessage(message);
+		String email = org.springframework.security.core.context.SecurityContextHolder
+				.getContext().getAuthentication().getName();
+		
+		return messageService.sendMessage(message, email);
 	}
 
 	@GetMapping("/history")

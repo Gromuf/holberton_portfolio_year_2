@@ -52,7 +52,7 @@ public class MessageServiceTest {
 
 		// Doit lever une exception car aucune amitié n'a été créée
 		assertThrows(RuntimeException.class, () -> {
-			messageService.sendMessage(msg);
+			messageService.sendMessage(msg, "owner1@test.com");
 		});
 	}
 }
