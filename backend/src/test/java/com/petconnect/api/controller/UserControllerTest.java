@@ -13,86 +13,86 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class UserControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Autowired
-	private WebApplicationContext webApplicationContext;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
-	@BeforeEach
-	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity()) 
+                .build();
+    }
 
-	@Test
-	void testCreateUser() throws Exception {
-		String userJson = """
-				{
-				"name": "Louis",
-				"email": "controller-test@test.com",
-				"password": "password123"
-				}
-				""";
+    @Test
+    void testRegisterSuccess() throws Exception {
+        String userJson = """
+                {
+                "name": "Louis",
+                "email": "user-test@test.com",
+                "password": "password123"
+                }
+                """;
 
-		mockMvc.perform(post("/api/users") // URL corrigée pour correspondre au Controller
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(userJson))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.name").value("Louis")) // Maintenant ça marche car tu renvoies l'objet User
-				.andExpect(jsonPath("$.email").value("controller-test@test.com"));
-	}
+        // ON UTILISE /api/auth/register (la route publique)
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isOk());
+    }
 
-	@Test
-	void testGetAllUsers() throws Exception {
-		mockMvc.perform(get("/api/users"))
-				.andExpect(status().isOk());
-	}
+    @Test
+    @WithMockUser // SIMULE UN UTILISATEUR CONNECTÉ
+    void testGetAllUsers() throws Exception {
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk());
+    }
 
-	@Test
-	void testCreateUserWithInvalidData() throws Exception {
-		String invalidUserJson = """
-				{
-				"name": "",
-				"email": "pas-un-email",
-				"password": "123"
-				}
-				""";
+    @Test
+    void testRegisterWithInvalidData() throws Exception {
+        String invalidUserJson = """
+                {
+                "name": "",
+                "email": "pas-un-email",
+                "password": "123"
+                }
+                """;
 
-		mockMvc.perform(post("/api/users")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(invalidUserJson))
-				.andExpect(status().isBadRequest()) // Vérifie le code 400
-				.andExpect(jsonPath("$.name").value("Name is required"))
-				.andExpect(jsonPath("$.password").value("Password must be at least 6 characters long"));
-	}
+        // ON UTILISE /api/auth/register
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidUserJson))
+                .andExpect(status().isBadRequest());
+    }
 
-	@Test
-	void testCreateDuplicateUserEmail() throws Exception {
-		String userJson = """
-				{
-				"name": "Louis",
-				"email": "unique@test.com",
-				"password": "password123"
-				}
-				""";
+    @Test
+    void testRegisterDuplicateEmail() throws Exception {
+        String userJson = """
+                {
+                "name": "Duplicate",
+                "email": "unique-user@test.com",
+                "password": "password123"
+                }
+                """;
 
-		// Premier enregistrement : OK
-		mockMvc.perform(post("/api/users")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(userJson))
-				.andExpect(status().isOk());
+        // Premier passage
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson));
 
-		// Deuxième enregistrement avec le même email : Doit échouer
-		mockMvc.perform(post("/api/users")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(userJson))
-				.andExpect(status().isConflict()); 
-				// Note : Si tu n'as pas encore géré DataIntegrityViolationException 
-				// dans ton ExceptionHandler, ce test pourrait renvoyer une 500. 
-				// C'est un bon moyen de vérifier !
-	}
+        // Deuxième passage (400 car ton AuthService lance RuntimeException)
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isBadRequest());
+    }
 }

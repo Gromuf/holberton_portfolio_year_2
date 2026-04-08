@@ -5,7 +5,6 @@ import com.petconnect.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,11 +17,6 @@ public class UserController {
 	@GetMapping
 	public List<User> getAllUsers() {
 		return userService.findAllUsers();
-	}
-
-	@PostMapping
-	public User createUser(@Valid @RequestBody User user) {
-		return userService.saveUser(user);
 	}
 
 	@GetMapping("/{id}")
