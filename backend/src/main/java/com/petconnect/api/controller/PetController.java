@@ -30,35 +30,36 @@ public class PetController {
 	@Autowired
 	private PetRepository petRepository;
 
-	@GetMapping
+	@GetMapping // Endpoint pour récupérer tous les animaux
 	public List<Pet> getAllPets() {
 		return petService.findAllPets();
 	}
 
-	@PostMapping
+	@GetMapping("/owner/{ownerId}") // Endpoint pour récupérer les animaux d'un propriétaire spécifique
+    public List<Pet> getPetsByOwner(@PathVariable Long ownerId) {
+        return petRepository.findByOwnerId(ownerId);
+    }
+
+	@PostMapping // Endpoint pour créer un nouvel animal
 	public Pet createPet(@Valid @RequestBody Pet pet) {
 
 		String currrentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
 		return petService.savePetWithCurrentEmail(pet, currrentUserEmail);
 	}
 
-	@PostMapping("/{id}/upload-image")
+	@PostMapping("/{id}/upload-image") // Endpoint pour uploader une image pour un animal spécifique
 	public Pet uploadPetImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
 		//Trouver l'animal
 		Pet pet = petRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Pet not found"));
-
 		// On récupère l'email de l'utilisateur actuellement connecté
 		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-		
 		// On vérifie si l'utilisateur est bien le propriétaire
 		if (!pet.getOwner().getEmail().equals(currentUserEmail)) {
 			throw new RuntimeException("You are not authorized to update this pet's photo");
 		}
-
 		// Envoyer l'image à Cloudinary et récupérer l'URL
 		String url = imageService.uploadImage(file);
-
 		// Mettre à jour l'animal en base de données avec l'URL de l'image
 		pet.setImageUrl(url);
 		return petRepository.save(pet);
