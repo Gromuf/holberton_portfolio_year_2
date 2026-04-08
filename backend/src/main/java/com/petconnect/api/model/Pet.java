@@ -35,4 +35,7 @@ public class Pet {
 	@JoinColumn(name = "user_id", nullable = false) // Clé étrangère vers la table users
 	@JsonIgnoreProperties("pets") // pour éviter la récursion infinie lors de la sérialisation JSON
 	private User owner;
+
+	@Column(name = "image_url", length = 500)
+	private String imageUrl;
 }
