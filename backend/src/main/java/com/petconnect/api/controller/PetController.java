@@ -26,6 +26,8 @@ public class PetController {
 
 	@PostMapping
 	public Pet createPet(@Valid @RequestBody Pet pet) {
-		return petService.savePet(pet);
+
+		String currrentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+		return petService.savePetWithCurrentEmail(pet, currrentUserEmail);
 	}
 }

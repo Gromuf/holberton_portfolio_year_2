@@ -1,5 +1,7 @@
 package com.petconnect.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +31,8 @@ public class Pet {
 	@Column(nullable = false)
 	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
 
-	@NotNull(message = "Owner is required for every pet") // Le propriétaire doit être spécifié
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false) // Clé étrangère vers la table users
+	@JsonIgnoreProperties("pets") // pour éviter la récursion infinie lors de la sérialisation JSON
 	private User owner;
 }

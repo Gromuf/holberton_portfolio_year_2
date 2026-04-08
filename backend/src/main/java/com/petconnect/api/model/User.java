@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -35,6 +37,6 @@ public class User {
 	private String name;
 
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-	@JsonIgnore
+	@JsonIgnoreProperties("owner") // pour éviter la récursion infinie lors de la sérialisation JSON
 	private List<Pet> pets;
 }
