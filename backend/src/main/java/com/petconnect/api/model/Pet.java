@@ -29,7 +29,7 @@ public class Pet {
 	private String species;
 
 	@Column(nullable = false)
-	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
+	private boolean isWalking = false; // par defaut le pet n'est pas en balade
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false) // Clé étrangère vers la table users
