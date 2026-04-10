@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/client"; // Ton instance axios configurée
+import api from "../api/client";
 
 export default function Home() {
   const [pets, setPets] = useState([]);
@@ -14,166 +14,199 @@ export default function Home() {
 
   const fetchMyPets = async () => {
     try {
-      // On récupère les animaux (le backend filtrera selon l'utilisateur via le token)
       const response = await api.get("/pets");
       setPets(response.data);
     } catch (err) {
-      console.error("Erreur de chargement", err);
+      console.error("Erreur chargement", err);
     }
   };
 
+  // Ajouter un nouvel animal
   const handleAddPet = async (e) => {
     e.preventDefault();
+    try {
+      const petData = {
+        name: formData.name,
+        species: formData.species,
+        isWalking: false,
+        imageUrl: "",
+      };
+      await api.post("/pets", petData);
+      setFormData({ name: "", species: "" }); // Reset form
+      fetchMyPets(); // Refresh list
+    } catch (err) {
+      console.error("Erreur ajout pet", err);
+    }
+  };
 
-    const petData = {
-      name: formData.name,
-      species: formData.species,
-      isWalking: false, // Inutile techniquement car géré par le défaut Java, mais sécurisant
-      imageUrl: "", // On laisse vide, pourra être modifié via l'upload plus tard
-    };
+  // Modifier l'image d'un animal existant
+  const handleImageUpload = async (petId, file) => {
+    if (!file) return;
+
+    const imageData = new FormData();
+    imageData.append("file", file);
 
     try {
-      // On utilise 'api' (et non axios brut) pour inclure les headers/token
-      const response = await api.post("/pets", petData);
-
-      console.log("Pet ajouté avec succès !", response.data);
-
-      // 1. On vide le formulaire
-      setFormData({ name: "", species: "" });
-
-      // 2. On rafraîchit la liste pour voir le nouveau pet
+      await api.post(`/pets/${petId}/upload-image`, imageData);
+      alert("Image mise à jour !");
       fetchMyPets();
-    } catch (error) {
-      // On affiche les détails de l'erreur 400 ou 403 pour débugger
-      console.error(
-        "Détails de l'erreur :",
-        error.response?.data || error.message,
-      );
-      alert("Erreur lors de l'ajout de l'animal.");
+    } catch (err) {
+      console.error("Erreur serveur détaillée :", err.response?.data);
+      alert("Erreur lors de l'envoi de l'image.");
     }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userId"); // Optionnel
     navigate("/");
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      <h1>Ma Session PetConnect</h1>
-      <button
-        onClick={logout}
-        style={{
-          backgroundColor: "#ff4d4d",
-          color: "white",
-          border: "none",
-          padding: "8px 15px",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Déconnexion
-      </button>
-
-      <hr style={{ margin: "20px 0" }} />
-
-      <h3>Ajouter un animal</h3>
-      <form
-        onSubmit={handleAddPet}
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+      <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          marginBottom: "30px",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <input
-          placeholder="Nom de l'animal"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-          style={{ padding: "8px" }}
-        />
-        <input
-          placeholder="Espèce (Chien, Chat...)"
-          value={formData.species}
-          onChange={(e) =>
-            setFormData({ ...formData, species: e.target.value })
-          }
-          required
-          style={{ padding: "8px" }}
-        />
+        <h1>Ma Session PetConnect</h1>
         <button
-          type="submit"
+          onClick={logout}
           style={{
-            padding: "10px",
-            backgroundColor: "#4CAF50",
+            backgroundColor: "red",
             color: "white",
             border: "none",
+            padding: "10px",
             borderRadius: "5px",
             cursor: "pointer",
           }}
         >
-          Ajouter à mes animaux
+          Logout
         </button>
-      </form>
+      </div>
 
-      <h3>Mes animaux enregistrés</h3>
-      {pets.length === 0 ? (
-        <p>Aucun animal trouvé.</p>
-      ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {pets.map((pet) => (
-            <li
-              key={pet.id}
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #eee",
-                display: "flex",
-                alignItems: "center",
-                gap: "15px",
-              }}
-            >
-              {pet.imageUrl ? (
-                <img
-                  src={pet.imageUrl}
-                  alt={pet.name}
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    backgroundColor: "#ddd",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "12px",
-                  }}
-                >
-                  N/A
+      <hr />
+
+      {/* --- FORMULAIRE D'AJOUT --- */}
+      <section style={{ marginBottom: "40px" }}>
+        <h3>Ajouter un nouvel animal</h3>
+        <form onSubmit={handleAddPet} style={{ display: "flex", gap: "10px" }}>
+          <input
+            placeholder="Nom"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+            style={{ padding: "8px", flex: 1 }}
+          />
+          <input
+            placeholder="Espèce (Chien, Chat...)"
+            value={formData.species}
+            onChange={(e) =>
+              setFormData({ ...formData, species: e.target.value })
+            }
+            required
+            style={{ padding: "8px", flex: 1 }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "8px 20px",
+              cursor: "pointer",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
+            Ajouter
+          </button>
+        </form>
+      </section>
+
+      {/* --- LISTE DES ANIMAUX --- */}
+      <section>
+        <h3>Mes animaux enregistrés</h3>
+        <div style={{ display: "grid", gap: "15px" }}>
+          {pets.length === 0 ? (
+            <p>Vous n'avez pas encore d'animaux.</p>
+          ) : (
+            pets.map((pet) => (
+              <div
+                key={pet.id}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "15px",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "20px",
+                  backgroundColor: "#f9f9f9",
+                }}
+              >
+                {/* Photo + Upload */}
+                <div style={{ textAlign: "center" }}>
+                  <img
+                    src={
+                      pet.imageUrl || "/default-pet.png" // Image par défaut si aucune photo n'est disponible
+                    }
+                    alt={pet.name}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      display: "block",
+                      marginBottom: "5px",
+                      border: "2px solid #ddd",
+                    }}
+                  />
+                  <label
+                    style={{
+                      fontSize: "11px",
+                      color: "#007bff",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Changer la photo
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageUpload(pet.id, e.target.files[0])
+                      }
+                    />
+                  </label>
                 </div>
-              )}
-              <div>
-                <strong>{pet.name}</strong>{" "}
-                <span style={{ color: "#666" }}>({pet.species})</span>
-                <br />
-                <small style={{ color: pet.isWalking ? "green" : "orange" }}>
-                  {pet.isWalking ? "● En balade" : "○ Au repos"}
-                </small>
+
+                {/* Infos */}
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ margin: "0 0 5px 0", fontSize: "1.2rem" }}>
+                    {pet.name}
+                  </h4>
+                  <p style={{ margin: "0 0 10px 0", color: "#555" }}>
+                    {pet.species}
+                  </p>
+                  <span
+                    style={{
+                      padding: "4px 8px",
+                      borderRadius: "12px",
+                      fontSize: "0.8rem",
+                      backgroundColor: pet.isWalking ? "#e8f5e9" : "#fff3e0",
+                      color: pet.isWalking ? "#2e7d32" : "#ef6c00",
+                      border: `1px solid ${pet.isWalking ? "#2e7d32" : "#ef6c00"}`,
+                    }}
+                  >
+                    {pet.isWalking ? "🏃 En balade" : "🏠 À la maison"}
+                  </span>
+                </div>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            ))
+          )}
+        </div>
+      </section>
     </div>
   );
 }

@@ -22,6 +22,11 @@ public class PetService {
 		return petRepository.findAll();
 	}
 
+	// Méthode pour trouver les pets d'un utilisateur par son email
+	public List<Pet> findPetsByOwnerEmail(String email) {
+		return petRepository.findByOwner_Email(email);
+	}
+
 	public Pet savePetWithCurrentEmail(Pet pet, String email) {
         User owner = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));

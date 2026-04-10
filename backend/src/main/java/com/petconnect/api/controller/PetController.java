@@ -30,7 +30,14 @@ public class PetController {
 	@Autowired
 	private PetRepository petRepository;
 
-	@GetMapping // Endpoint pour récupérer tous les animaux
+	// Endpoint pour récupérer les animaux de l'utilisateur actuellement connecté
+	@GetMapping
+	public List<Pet> getMyPets() {
+		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+		return petService.findPetsByOwnerEmail(currentUserEmail);
+	}
+
+	@GetMapping("/all") // Endpoint pour récupérer tous les animaux
 	public List<Pet> getAllPets() {
 		return petService.findAllPets();
 	}

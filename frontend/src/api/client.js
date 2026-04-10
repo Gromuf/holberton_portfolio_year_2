@@ -3,9 +3,6 @@ import axios from "axios";
 const api = axios.create({
   // L'URL pointera vers ton backend Docker ou local
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Intercepteur : Ajoute le token automatiquement s'il existe

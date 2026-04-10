@@ -10,4 +10,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
 	// Method to find pets by owner ID
 	List<Pet> findByOwnerId(Long ownerId);
+
+	// Method to find pets by owner email
+	List<Pet> findByOwner_Email(String email);
 }
