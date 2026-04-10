@@ -46,4 +46,11 @@ public class FriendshipController {
         // sécuriser la suppression (ex: seul pet1 ou pet2 peut supprimer)
         friendshipService.deleteFriendship(id);
     }
+
+    // Get pending friend requests for the current user
+    @GetMapping("/pending")
+    public List<Friendship> getPendingRequests() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return friendshipService.getPendingRequestForUser(email);
+    }
 }

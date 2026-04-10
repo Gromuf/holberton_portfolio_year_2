@@ -86,4 +86,9 @@ public class FriendshipService {
         friendship.setStatus("PENDING");
         return friendshipRepository.save(friendship);
     }
+
+    // Get pending friend requests for a user
+    public List<Friendship> getPendingRequestForUser(String email) {
+        return friendshipRepository.findAll().stream().filter(f -> f.getStatus().equals("PENDING")).filter(f -> f.getPet2().getOwner().getEmail().equals(email)).toList();
+    }
 }
