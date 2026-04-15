@@ -1,21 +1,25 @@
 package com.petconnect.api.controller;
 
-import com.petconnect.api.model.Pet;
-import com.petconnect.api.repository.PetRepository;
-import com.petconnect.api.service.PetService;
-import com.petconnect.api.service.ImageService;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import com.petconnect.api.model.Pet;
+import com.petconnect.api.repository.PetRepository;
+import com.petconnect.api.service.ImageService;
+import com.petconnect.api.service.PetService;
+
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/pets")
@@ -56,19 +60,26 @@ public class PetController {
 
 	@PostMapping("/{id}/upload-image") // Endpoint pour uploader une image pour un animal spécifique
 	public Pet uploadPetImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
-		//Trouver l'animal
 		Pet pet = petRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Pet not found"));
-		// On récupère l'email de l'utilisateur actuellement connecté
 		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-		// On vérifie si l'utilisateur est bien le propriétaire
 		if (!pet.getOwner().getEmail().equals(currentUserEmail)) {
 			throw new RuntimeException("You are not authorized to update this pet's photo");
 		}
-		// Envoyer l'image à Cloudinary et récupérer l'URL
 		String url = imageService.uploadImage(file);
-		// Mettre à jour l'animal en base de données avec l'URL de l'image
 		pet.setImageUrl(url);
 		return petRepository.save(pet);
+	}
+
+	@DeleteMapping("/{id}") // Endpoint pour supprimer un animal
+	public void deletePet(@PathVariable Long id) {
+		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+		Pet pet = petRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Pet not found"));
+		
+		if (!pet.getOwner().getEmail().equals(currentUserEmail)) {
+			throw new RuntimeException("Not authorized to delete this pet");
+		}
+		petRepository.delete(pet);
 	}
 }

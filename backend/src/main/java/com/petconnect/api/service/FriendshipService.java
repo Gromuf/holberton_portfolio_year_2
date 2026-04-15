@@ -1,12 +1,17 @@
 package com.petconnect.api.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.petconnect.api.model.Friendship;
 import com.petconnect.api.model.Pet;
 import com.petconnect.api.repository.FriendshipRepository;
 import com.petconnect.api.repository.PetRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class FriendshipService {
@@ -90,5 +95,23 @@ public class FriendshipService {
     // Get pending friend requests for a user
     public List<Friendship> getPendingRequestForUser(String email) {
         return friendshipRepository.findAll().stream().filter(f -> f.getStatus().equals("PENDING")).filter(f -> f.getPet2().getOwner().getEmail().equals(email)).toList();
+    }
+
+    // Get friends of a pet
+    public List<Map<String, Object>> getFriendsForPet(Long petId) {
+        return friendshipRepository.findAll().stream()
+                .filter(f -> "ACCEPTED".equals(f.getStatus()))
+                .filter(f -> f.getPet1().getId().equals(petId) || f.getPet2().getId().equals(petId))
+                .map(f -> {
+                    Pet friend = f.getPet1().getId().equals(petId) ? f.getPet2() : f.getPet1();
+                    Map<String, Object> friendData = new HashMap<>();
+                    friendData.put("id", friend.getId());
+                    friendData.put("name", friend.getName());
+                    friendData.put("species", friend.getSpecies());
+                    friendData.put("imageUrl", friend.getImageUrl());
+                    friendData.put("friendshipId", f.getId());
+                    return friendData;
+                })
+                .collect(Collectors.toList());
     }
 }
