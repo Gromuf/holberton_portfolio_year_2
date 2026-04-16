@@ -1,0 +1,61 @@
+.homeContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.homeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.homeHeader h1 {
+  color: #3d5afe;
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* LA GRILLE PRINCIPALE */
+.gridMain {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr; /* Gauche un peu plus large */
+  gap: 40px;
+  align-items: start;
+}
+
+/* Responsive : On empile sur mobile */
+@media (max-width: 900px) {
+  .gridMain {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sectionTitle {
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+  border-left: 4px solid #3d5afe;
+  padding-left: 12px;
+}
+
+.actionCard {
+  background-color: #1e1e1e;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

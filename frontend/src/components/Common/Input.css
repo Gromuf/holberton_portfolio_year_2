@@ -1,0 +1,16 @@
+.base-input {
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #1e1e1e;
+  color: white;
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.base-input:focus {
+  outline: none;
+  border-color: #3d5afe;
+}
