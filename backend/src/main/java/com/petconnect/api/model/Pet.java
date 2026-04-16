@@ -1,13 +1,24 @@
 package com.petconnect.api.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "pets")
@@ -38,4 +49,12 @@ public class Pet {
 
 	@Column(name = "image_url", length = 500)
 	private String imageUrl;
+
+	@OneToMany(mappedBy = "pet1", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Friendship> friendshipsAsPet1;
+
+	@OneToMany(mappedBy = "pet2", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Friendship> friendshipsAsPet2;
 }

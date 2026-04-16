@@ -25,11 +25,15 @@ export default function Home() {
   const fetchMyData = async () => {
     try {
       const resPets = await api.get("/pets");
-      setPets(resPets.data);
       const resReq = await api.get("/friendships/pending");
-      setPendingRequests(resReq.data);
+      const petsData = Array.isArray(resPets.data) ? resPets.data : (resPets.data?.pets || []);
+      setPets(petsData);
+      const reqData = Array.isArray(resReq.data) ? resReq.data : [];
+      setPendingRequests(reqData);
     } catch (err) {
       console.error("Erreur chargement données", err);
+      setPets([]);
+      setPendingRequests([]);
     }
   };
 
@@ -39,7 +43,6 @@ export default function Home() {
     setSelectedPetForProfile(pet);
     setShowFriends(false); 
     try {
-      // Appel vers ton nouvel endpoint Controller
       const res = await api.get(`/friendships/pet/${pet.id}/friends`);
       setFriendsList(res.data);
     } catch (err) {
@@ -151,6 +154,17 @@ export default function Home() {
     }
   };
 
+  const handleRejectRequest = async (requestId) => {
+    if (!window.confirm("Refuser cette demande d'ami ?")) return;
+    try {
+      await api.delete(`/friendships/${requestId}`); 
+      alert("Demande refusée.");
+      fetchMyData();
+    } catch (err) {
+      console.error("Erreur rejet amitié", err);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -159,7 +173,7 @@ export default function Home() {
   return (
     <div style={{ backgroundColor: "#121212", minHeight: "100vh", color: "#e0e0e0", padding: "20px", fontFamily: "'Segoe UI', sans-serif" }}>
       
-      {/* MODAL DE PROFIL (S'affiche si un pet est sélectionné) */}
+      {/* MODAL DE PROFIL */}
       {selectedPetForProfile && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.85)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
           <div style={{ backgroundColor: "white", color: "#333", padding: "25px", borderRadius: "15px", width: "350px", textAlign: "center" }}>
@@ -206,7 +220,7 @@ export default function Home() {
 
           <h3>Mes animaux enregistrés</h3>
           <div style={{ display: "grid", gap: "15px" }}>
-            {pets.length === 0 ? (
+            {(!Array.isArray(pets) || pets.length === 0) ? (
               <p>Aucun animal trouvé.</p>
             ) : (
               pets.map((pet) => (
@@ -215,7 +229,7 @@ export default function Home() {
                     <img
                       src={pet.imageUrl || "/default-pet.png"}
                       alt={pet.name}
-                      onClick={() => openProfile(pet)} // OUVRIR PROFIL
+                      onClick={() => openProfile(pet)}
                       style={{ width: "80px", height: "80px", borderRadius: "50%", objectFit: "cover", border: "2px solid #ddd", cursor: "pointer" }}
                     />
                     <label style={{ fontSize: "11px", color: "#007bff", cursor: "pointer", display: "block", marginTop: "5px" }}>
@@ -230,7 +244,6 @@ export default function Home() {
                       {pet.isWalking ? "🏃 En balade" : "🏠 À la maison"}
                     </span>
                   </div>
-                  {/* BOUTON SUPPRESSION */}
                   <button onClick={() => handleDeletePet(pet.id)} style={{ background: "none", border: "none", color: "#cf6679", cursor: "pointer", fontSize: "20px" }}>🗑️</button>
                 </div>
               ))
@@ -240,7 +253,7 @@ export default function Home() {
 
         {/* COLONNE DROITE : RÉSEAU & RECHERCHE */}
         <section>
-          {pets.length > 0 && (
+          {(Array.isArray(pets) && pets.length > 0) && (
             <div style={{ marginBottom: "25px", padding: "15px", backgroundColor: "#1e1e1e", borderRadius: "10px", border: "1px solid #3d5afe" }}>
               <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>🤝 Envoyer mes demandes en tant que :</label>
               <select value={mySelectedPetId} onChange={(e) => setMySelectedPetId(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "5px", backgroundColor: "#121212", color: "white", border: "1px solid #444" }}>
@@ -250,13 +263,17 @@ export default function Home() {
             </div>
           )}
 
-          {pendingRequests.length > 0 && (
+          {/* NOTIFICATIONS */}
+          {(Array.isArray(pendingRequests) && pendingRequests.length > 0) && (
             <div style={{ backgroundColor: "#2c2200", border: "1px solid #664d03", color: "#ffecb3", padding: "15px", borderRadius: "10px", marginBottom: "20px" }}>
               <h4 style={{ margin: "0 0 10px 0" }}>🔔 Demandes reçues</h4>
               {pendingRequests.map((req) => (
-                <div key={req.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", marginBottom: "8px", borderBottom: "1px solid #444", paddingBottom: "5px" }}>
+                <div key={req.id} style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "10px", borderBottom: "1px solid #444", paddingBottom: "10px" }}>
                   <span><strong>{req.pet1.name}</strong> invite <strong>{req.pet2.name}</strong></span>
-                  <button onClick={() => handleAcceptRequest(req.id)} style={{ backgroundColor: "#03dac6", border: "none", padding: "4px 12px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}>Accepter</button>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button onClick={() => handleAcceptRequest(req.id)} style={{ backgroundColor: "#03dac6", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", flex: 1 }}>Accepter</button>
+                    <button onClick={() => handleRejectRequest(req.id)} style={{ backgroundColor: "#cf6679", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", flex: 1 }}>Refuser</button>
+                  </div>
                 </div>
               ))}
             </div>

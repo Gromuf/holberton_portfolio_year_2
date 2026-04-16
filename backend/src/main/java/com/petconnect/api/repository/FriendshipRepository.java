@@ -3,7 +3,9 @@ package com.petconnect.api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.petconnect.api.model.Friendship;
 import com.petconnect.api.model.Pet;
@@ -21,4 +23,8 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
 	// Optional : Méthode pour trouver les demandes d'amitié en attente entre deux pets
 	List<Friendship> findByStatusAndPet1IdOrPet2Id(String status, Long pet1Id, Long pet2Id);
+
+	@Modifying
+	@Transactional
+	void deleteByPet1OrPet2(Pet pet1, Pet pet2);
 }
