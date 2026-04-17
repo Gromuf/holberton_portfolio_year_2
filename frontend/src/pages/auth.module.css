@@ -1,0 +1,48 @@
+.authWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0f172a;
+}
+
+.authCard {
+  background: #1e293b;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #334155;
+}
+
+.authCard h2 {
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.authFooter {
+  margin-top: 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.authLink {
+  color: #3d5afe;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.authLink:hover {
+  text-decoration: underline;
+}
