@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Button from "../components/Common/Button";
+import Input from "../components/Common/Input";
 import styles from "./auth.module.css";
 
 export default function Register() {
@@ -12,8 +13,7 @@ export default function Register() {
       <div className={styles.authCard}>
         <h2>Créer un compte</h2>
         <form onSubmit={handleRegister} className={styles.authForm}>
-          <input
-            className="base-input"
+          <Input
             type="text"
             placeholder="Nom complet"
             value={registerData.name}
@@ -22,8 +22,7 @@ export default function Register() {
             }
             required
           />
-          <input
-            className="base-input"
+          <Input
             type="email"
             placeholder="Email"
             value={registerData.email}
@@ -32,10 +31,9 @@ export default function Register() {
             }
             required
           />
-          <input
-            className="base-input"
+          <Input
             type="password"
-            placeholder="Mot de passe (min 6 car.)"
+            placeholder="Mot de passe"
             value={registerData.password}
             onChange={(e) =>
               setRegisterData({ ...registerData, password: e.target.value })
@@ -47,7 +45,7 @@ export default function Register() {
           </Button>
         </form>
         <p className={styles.authFooter}>
-          Déjà un compte ?{" "}
+          Déjà inscrit ?{" "}
           <Link to="/login" className={styles.authLink}>
             Se connecter
           </Link>

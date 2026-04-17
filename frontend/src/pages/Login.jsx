@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Button from "../components/Common/Button";
+import Input from "../components/Common/Input";
 import styles from "./auth.module.css";
 
 export default function Login() {
@@ -10,10 +11,9 @@ export default function Login() {
   return (
     <div className={styles.authWrapper}>
       <div className={styles.authCard}>
-        <h2>Bon retour !</h2>
+        <h2>Connexion</h2>
         <form onSubmit={handleLogin} className={styles.authForm}>
-          <input
-            className="base-input" // Utilise ta classe d'Input globale
+          <Input
             type="email"
             placeholder="Email"
             value={credentials.email}
@@ -22,8 +22,7 @@ export default function Login() {
             }
             required
           />
-          <input
-            className="base-input"
+          <Input
             type="password"
             placeholder="Mot de passe"
             value={credentials.password}
@@ -37,7 +36,7 @@ export default function Login() {
           </Button>
         </form>
         <p className={styles.authFooter}>
-          Pas encore de compte ?{" "}
+          Pas de compte ?{" "}
           <Link to="/register" className={styles.authLink}>
             S'inscrire
           </Link>
