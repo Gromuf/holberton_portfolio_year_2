@@ -1,0 +1,35 @@
+.sidebar {
+  position: sticky;
+  top: 84px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.navBtn {
+  justify-content: flex-start !important;
+  width: 100%;
+  background: transparent !important;
+  color: #94a3b8 !important;
+}
+
+.navBtn:hover {
+  background: #1e293b !important;
+  color: white !important;
+}
+
+.actionGroup {
+  border-top: 1px solid #334155;
+  padding-top: 20px;
+}
+
+.addPetBtn {
+  width: 100%;
+}

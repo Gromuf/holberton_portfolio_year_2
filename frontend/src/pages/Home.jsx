@@ -1,18 +1,20 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./Home.module.css";
-import { useHome } from "../hooks/useHome"; // Import du hook
+import { useHome } from "../hooks/useHome";
+import api from "../api/client";
 
-// Composants
-import Button from "../components/Common/Button";
+// On utilise maintenant le Layout global
+import MainLayout from "../components/Layout/MainLayout";
+
+// Composants métiers
 import PetCard from "../components/Pets/PetCard";
 import PetModal from "../components/Pets/PetModal";
-import SocialSection from "../components/Social/SocialSection";
 import PetForm from "../components/Pets/PetForm";
-import api from "../api/client";
 
 export default function Home() {
   const navigate = useNavigate();
 
+  // On extrait TOUTE la logique de ton hook useHome
   const {
     pets,
     searchResults,
@@ -41,71 +43,85 @@ export default function Home() {
     fetchMyData,
   } = useHome(navigate);
 
+  // On regroupe les fonctions pour la SocialSection (Sidebar droite)
+  const socialProps = {
+    pets,
+    mySelectedPetId,
+    setMySelectedPetId,
+    pendingRequests,
+    onAccept: handleAcceptRequest,
+    onReject: async (id) => {
+      await api.delete(`/friendships/${id}`);
+      fetchMyData();
+    },
+    searchQuery,
+    setSearchQuery,
+    onSearch: handleSearch,
+    searchResults,
+    viewUserPets,
+    selectedUserPets,
+    sendFriendRequest,
+  };
+
   return (
-    <div className={styles.homeContainer}>
-      <PetModal
-        pet={selectedPetForProfile}
-        friends={friendsList}
-        showFriends={showFriends}
-        setShowFriends={setShowFriends}
-        onRemoveFriend={async (fid) => {
-          await api.delete(`/friendships/${fid}`);
-          openProfile(selectedPetForProfile);
-        }}
-        onClose={() => setSelectedPetForProfile(null)}
-      />
+    <MainLayout 
+      onAddPetClick={() => setSelectedPetForProfile("new")} 
+      logout={logout}
+      {...socialProps}
+    >
+      {/* Flux central des animaux */}
+      <div className="pet-grid">
+        {pets.length > 0 ? (
+          pets.map((pet) => (
+            <PetCard
+              key={pet.id}
+              pet={pet}
+              onOpen={openProfile}
+              onDelete={handleDeletePet}
+              onUpload={handleImageUpload}
+            />
+          ))
+        ) : (
+          <p style={{ color: "#94a3b8", textAlign: "center", padding: "20px" }}>
+            Aucun animal trouvé. Cliquez sur "+" à gauche pour commencer !
+          </p>
+        )}
+      </div>
 
-      <header className={styles.homeHeader}>
-        <h1>PetConnect</h1>
-        <Button variant="danger" onClick={logout}>
-          Logout
-        </Button>
-      </header>
+      {/* Modal de profil/amis (si un animal est sélectionné) */}
+      {selectedPetForProfile && selectedPetForProfile !== "new" && (
+        <PetModal
+          pet={selectedPetForProfile}
+          friends={friendsList}
+          showFriends={showFriends}
+          setShowFriends={setShowFriends}
+          onRemoveFriend={async (fid) => {
+            await api.delete(`/friendships/${fid}`);
+            openProfile(selectedPetForProfile);
+          }}
+          onClose={() => setSelectedPetForProfile(null)}
+        />
+      )}
 
-      <main className={styles.gridMain}>
-        <section>
-          <div className={styles.actionCard}>
-            <h3 className={styles.sectionTitle}>Ajouter un animal</h3>
+      {/* Modal d'ajout d'animal (si on a cliqué sur le + de la sidebar) */}
+      {selectedPetForProfile === "new" && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Ajouter un compagnon</h3>
             <PetForm
               formData={formData}
               setFormData={setFormData}
               onSubmit={handleAddPet}
             />
+            <button 
+              onClick={() => setSelectedPetForProfile(null)}
+              style={{ marginTop: "15px", background: "none", border: "none", color: "#666", cursor: "pointer" }}
+            >
+              Annuler
+            </button>
           </div>
-
-          <h3 className={styles.sectionTitle}>Mes animaux</h3>
-          <div className={styles.listSection}>
-            {pets.map((pet) => (
-              <PetCard
-                key={pet.id}
-                pet={pet}
-                onOpen={openProfile}
-                onDelete={handleDeletePet}
-                onUpload={handleImageUpload}
-              />
-            ))}
-          </div>
-        </section>
-
-        <SocialSection
-          pets={pets}
-          mySelectedPetId={mySelectedPetId}
-          setMySelectedPetId={setMySelectedPetId}
-          pendingRequests={pendingRequests}
-          onAccept={handleAcceptRequest}
-          onReject={async (id) => {
-            await api.delete(`/friendships/${id}`);
-            fetchMyData();
-          }}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onSearch={handleSearch}
-          searchResults={searchResults}
-          viewUserPets={viewUserPets}
-          selectedUserPets={selectedUserPets}
-          sendFriendRequest={sendFriendRequest}
-        />
-      </main>
-    </div>
+        </div>
+      )}
+    </MainLayout>
   );
 }

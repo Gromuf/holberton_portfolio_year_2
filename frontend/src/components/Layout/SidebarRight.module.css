@@ -1,0 +1,15 @@
+.sidebar {
+  position: sticky;
+  top: 84px;
+  height: fit-content;
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #94a3b8;
+}
