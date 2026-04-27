@@ -102,8 +102,6 @@ export default function Home() {
           onClose={() => setSelectedPetForProfile(null)}
         />
       )}
-
-      {/* Modal d'ajout d'animal (si on a cliqué sur le + de la sidebar) */}
       {selectedPetForProfile === "new" && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -111,7 +109,10 @@ export default function Home() {
             <PetForm
               formData={formData}
               setFormData={setFormData}
-              onSubmit={handleAddPet}
+              onSubmit={async (e) => {
+                await handleAddPet(e);
+                setSelectedPetForProfile(null);
+              }}
             />
             <button 
               onClick={() => setSelectedPetForProfile(null)}
