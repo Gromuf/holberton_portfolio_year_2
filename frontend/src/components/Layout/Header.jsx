@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
-import MobileMenu from "./MobileMenu"; // On va créer ce composant
+import MobileMenu from "./MobileMenu";
 
-export default function Header({ logout, ...socialProps }) {
+export default function Header({ logout, onAddPetClick, ...socialProps }) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -18,7 +18,6 @@ export default function Header({ logout, ...socialProps }) {
         <h1 className={styles.logo} onClick={() => navigate("/home")}>
           PetConnect
         </h1>
-
         <div className={styles.headerRight}>
           <button onClick={logout} className={styles.logoutBtn}>Logout</button>
           <div className={styles.profileCircle} onClick={() => navigate("/profile")}>JD</div>
@@ -28,6 +27,7 @@ export default function Header({ logout, ...socialProps }) {
         <MobileMenu 
           onClose={() => setIsMenuOpen(false)} 
           logout={logout} 
+          onAddPetClick={onAddPetClick}
           {...socialProps} 
         />
       )}
