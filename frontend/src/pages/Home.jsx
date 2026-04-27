@@ -14,7 +14,7 @@ import PetForm from "../components/Pets/PetForm";
 export default function Home() {
   const navigate = useNavigate();
 
-  // On extrait TOUTE la logique de ton hook useHome
+  // On extrait la logique de ton hook useHome
   const {
     pets,
     searchResults,
@@ -43,16 +43,21 @@ export default function Home() {
     fetchMyData,
   } = useHome(navigate);
 
-  // On regroupe les fonctions pour la SocialSection (Sidebar droite)
+  // --- CORRECTION : Harmonisation des noms pour le "câblage" ---
   const socialProps = {
     pets,
     mySelectedPetId,
     setMySelectedPetId,
     pendingRequests,
-    onAccept: handleAcceptRequest,
-    onReject: async (id) => {
-      await api.delete(`/friendships/${id}`);
-      fetchMyData();
+    // On utilise les noms attendus par MainLayout.jsx et SocialSection.jsx
+    onAcceptRequest: handleAcceptRequest,
+    onRejectRequest: async (id) => {
+      try {
+        await api.delete(`/friendships/${id}`);
+        fetchMyData(); // Rafraîchit les données après suppression
+      } catch (error) {
+        console.error("Erreur lors du refus de la demande :", error);
+      }
     },
     searchQuery,
     setSearchQuery,
@@ -102,6 +107,8 @@ export default function Home() {
           onClose={() => setSelectedPetForProfile(null)}
         />
       )}
+
+      {/* Modal de création d'un nouvel animal */}
       {selectedPetForProfile === "new" && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -116,7 +123,14 @@ export default function Home() {
             />
             <button 
               onClick={() => setSelectedPetForProfile(null)}
-              style={{ marginTop: "15px", background: "none", border: "none", color: "#666", cursor: "pointer" }}
+              style={{ 
+                marginTop: "15px", 
+                background: "none", 
+                border: "none", 
+                color: "#94a3b8", 
+                cursor: "pointer",
+                textDecoration: "underline" 
+              }}
             >
               Annuler
             </button>

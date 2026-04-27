@@ -1,0 +1,74 @@
+.notificationArea {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.notifCard {
+  background: #1e293b;
+  border-left: 4px solid #3d5afe;
+  padding: 12px;
+  border-radius: 4px 8px 8px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #334155;
+}
+
+.notifText {
+  font-size: 0.85rem;
+  color: #f1f5f9;
+  line-height: 1.4;
+}
+
+.notifText strong {
+  color: #3d5afe;
+}
+
+.notifSubText {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  display: block;
+}
+
+.notifActions {
+  display: flex;
+  gap: 8px;
+}
+
+.acceptBtn, .rejectBtn {
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.acceptBtn { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+.acceptBtn:hover { background: #22c55e; color: white; }
+
+.rejectBtn { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+.rejectBtn:hover { background: #ef4444; color: white; }
+
+.divider {
+  border: 0;
+  border-top: 1px solid #334155;
+  margin: 10px 0;
+}

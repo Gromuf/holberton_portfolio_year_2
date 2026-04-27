@@ -1,0 +1,86 @@
+.socialContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.searchBox {
+  margin-bottom: 10px;
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.userItem, .petItem {
+  background: #2d3748;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid #334155;
+}
+
+.userItem:hover, .petItem:hover {
+  background: #3d5afe;
+  border-color: #3d5afe;
+}
+
+.stepContainer h4 {
+  margin: 10px 0 15px 0;
+  color: #fff;
+}
+
+.backLink {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.backLink:hover {
+  background: #334155;
+  color: #ffffff;
+  border-color: #3d5afe;
+}
+
+.actionCard {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #334155;
+  margin: 15px 0;
+}
+
+.petSelect {
+  width: 100%;
+  padding: 10px;
+  background: #0f172a;
+  color: white;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}

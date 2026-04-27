@@ -1,14 +1,16 @@
+import React, { useState } from "react";
+import NotificationList from "./NotificationList";
 import Button from "../Common/Button";
 import Input from "../Common/Input";
-import "./SocialSection.css";
+import styles from "./SocialSection.module.css";
 
 export default function SocialSection({ 
-  pets, 
+  onAcceptRequest, 
+  onRejectRequest, 
+  pendingRequests,
+  pets, // Tes propres animaux pour le <select>
   mySelectedPetId, 
   setMySelectedPetId, 
-  pendingRequests, 
-  onAccept, 
-  onReject, 
   searchQuery, 
   setSearchQuery, 
   onSearch, 
@@ -17,72 +19,115 @@ export default function SocialSection({
   selectedUserPets, 
   sendFriendRequest 
 }) {
+  // --- ÉTATS LOCAUX POUR LA NAVIGATION DU TUNNEL ---
+  const [currentStep, setCurrentStep] = useState('SEARCH'); // SEARCH | OWNER | DETAILS
+  const [selectedOwner, setSelectedOwner] = useState(null);
+  const [selectedTargetPet, setSelectedTargetPet] = useState(null);
+
+  // --- LOGIQUE DE NAVIGATION ---
+  const handleOwnerClick = async (user) => {
+    setSelectedOwner(user);
+    await viewUserPets(user.id); // Charge les animaux de cet humain
+    setCurrentStep('OWNER');
+  };
+
+  const handlePetClick = (pet) => {
+    setSelectedTargetPet(pet);
+    setCurrentStep('DETAILS');
+  };
+
+  const goBack = () => {
+    if (currentStep === 'DETAILS') {
+      setCurrentStep('OWNER');
+    } else {
+      setCurrentStep('SEARCH');
+      setSelectedOwner(null);
+    }
+  };
+
   return (
-    <section className="social-container">
-      {/* SÉLECTEUR D'IDENTITÉ */}
-      {pets.length > 0 && (
-        <div className="identity-box">
-          <label>🤝 Agir en tant que :</label>
-          <select 
-            className="pet-select"
-            value={mySelectedPetId} 
-            onChange={(e) => setMySelectedPetId(e.target.value)}
-          >
-            <option value="">-- Choisir un animal --</option>
-            {pets.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+    <div className={styles.socialContainer}>
+      {/* 1. NOTIFICATIONS (Toujours en haut) */}
+      <NotificationList 
+        requests={pendingRequests} 
+        onAccept={onAcceptRequest} 
+        onReject={onRejectRequest} 
+      />
+
+      {/* 2. ÉTAPE : RECHERCHE D'HUMAIN */}
+      {currentStep === 'SEARCH' && (
+        <div className={styles.searchSection}>
+          <form onSubmit={onSearch} className={styles.searchBox}>
+            <Input 
+              placeholder="Rechercher un humain..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
+          <div className={styles.resultsList}>
+            {searchResults && searchResults.map(user => (
+              <div key={user.id} className={styles.userItem} onClick={() => handleOwnerClick(user)}>
+                <span>👤 {user.name}</span>
+                <span style={{color: '#3d5afe'}}>❯</span>
+              </div>
             ))}
-          </select>
-        </div>
-      )}
-
-      {/* NOTIFICATIONS */}
-      {pendingRequests.length > 0 && (
-        <div className="notif-panel">
-          <h4>🔔 Demandes reçues</h4>
-          {pendingRequests.map((req) => (
-            <div key={req.id} className="notif-item">
-              <span><strong>{req.pet1.name}</strong> invite <strong>{req.pet2.name}</strong></span>
-              <div className="notif-btns">
-                <Button variant="success" onClick={() => onAccept(req.id)}>Accepter</Button>
-                <Button variant="danger" onClick={() => onReject(req.id)}>Refuser</Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* RECHERCHE */}
-      <h3 className="section-title">Trouver des amis</h3>
-      <form onSubmit={onSearch} className="search-bar">
-        <Input 
-          placeholder="Rechercher un propriétaire..." 
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)} 
-        />
-        <Button type="submit">🔍</Button>
-      </form>
-
-      <div className="results-list">
-        {searchResults.map((user) => (
-          <div key={user.id} className="user-result">
-            <div className="user-info" onClick={() => viewUserPets(user.id)}>
-              👤 {user.name} <small>({user.email})</small>
-            </div>
-            
-            {selectedUserPets.length > 0 && selectedUserPets[0].owner.id === user.id && (
-              <div className="user-pets-list">
-                {selectedUserPets.map((p) => (
-                  <div key={p.id} className="user-pet-card">
-                    <span>🐾 {p.name} ({p.species})</span>
-                    <Button onClick={() => sendFriendRequest(p.id)}>Ajouter</Button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
-        ))}
-      </div>
-    </section>
+        </div>
+      )}
+
+      {/* 3. ÉTAPE : LISTE DES ANIMAUX DE L'HUMAIN SÉLECTIONNÉ */}
+      {currentStep === 'OWNER' && (
+        <div className={styles.stepContainer}>
+          <button onClick={goBack} className={styles.backLink}>← Retour</button>
+          <h4>Animaux de {selectedOwner?.name}</h4>
+          <div className={styles.resultsList}>
+            {selectedUserPets && selectedUserPets.map(pet => (
+              <div key={pet.id} className={styles.petItem} onClick={() => handlePetClick(pet)}>
+                <span>🐾 {pet.name}</span>
+                <span style={{fontSize: '0.8rem', color: '#94a3b8'}}>{pet.species}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 4. ÉTAPE : DÉTAILS ET DEMANDE D'AMI */}
+      {currentStep === 'DETAILS' && (
+        <div className={styles.stepContainer}>
+          <button onClick={goBack} className={styles.backLink}>← Retour</button>
+          <h4>{selectedTargetPet?.name}</h4>
+          <div className={styles.actionCard}>
+            <p className={styles.label}>Option A</p>
+            <Button variant="ghost" disabled style={{width: '100%'}}>📖 Voir le profil</Button>
+            
+            <hr className={styles.divider} />
+            
+            <p className={styles.label}>Option B : Demande d'ami</p>
+            <select 
+              className={styles.petSelect}
+              value={mySelectedPetId} 
+              onChange={(e) => setMySelectedPetId(e.target.value)}
+            >
+              <option value="">Choisir mon animal...</option>
+              {pets && pets.map(p => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+            <Button 
+              variant="success" 
+              onClick={() => {
+                sendFriendRequest(selectedTargetPet.id);
+                // Optionnel : revenir au début après l'envoi
+                setCurrentStep('SEARCH');
+              }}
+              disabled={!mySelectedPetId}
+              style={{width: '100%'}}
+            >
+              Envoyer la demande
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
