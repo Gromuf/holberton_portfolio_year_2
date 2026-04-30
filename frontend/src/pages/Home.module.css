@@ -25,12 +25,11 @@
 /* LA GRILLE PRINCIPALE */
 .gridMain {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr; /* Gauche un peu plus large */
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 40px;
   align-items: start;
 }
 
-/* Responsive : On empile sur mobile */
 @media (max-width: 900px) {
   .gridMain {
     grid-template-columns: 1fr;
@@ -58,4 +57,12 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+/* --- AJOUT POUR LA GALERIE D'ANIMAUX --- */
+.petGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px 0;
 }

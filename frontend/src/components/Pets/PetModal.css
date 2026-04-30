@@ -4,44 +4,108 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.85); /* Seul le background a de l'opacité */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background-color: white;
-  color: #333;
+  background-color: #1e293b; /* Thème sombre */
+  color: #f1f5f9;
   padding: 25px;
   border-radius: 15px;
-  width: 350px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.modal-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .modal-img {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 10px;
   border: 3px solid #3d5afe;
 }
 
-.species-text {
-  color: #666;
-  margin-bottom: 20px;
+.upload-btn {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
+.upload-btn:hover {
+  color: #3d5afe;
+}
+
+.modal-info {
+  text-align: left;
+}
+
+.modal-info h2 {
+  margin: 0 0 5px 0;
+  color: #ffffff;
+}
+
+.species-text {
+  color: #94a3b8;
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+}
+
+.badge-walking {
+  background-color: rgba(46, 125, 50, 0.2);
+  color: #4ade80;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  border: 1px solid #2e7d32;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* BIO */
+.modal-bio {
+  background-color: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid #3d5afe;
+  font-style: italic;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* FRIENDS SECTION */
 .friends-scroll-box {
   max-height: 150px;
   overflow-y: auto;
-  border: 1px solid #eee;
+  background-color: #0f172a;
+  border: 1px solid #334155;
   padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
   text-align: left;
 }
 
@@ -49,29 +113,62 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #f9f9f9;
+  padding: 10px 8px;
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
+}
+
+.friend-list-item:last-child {
+  border-bottom: none;
 }
 
 .btn-remove {
-  color: #cf6679;
-  border: none;
-  background: none;
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #f87171;
+  color: white;
 }
 
 .no-friends {
-  font-size: 12px;
+  font-size: 0.85rem;
   text-align: center;
-  color: #999;
+  color: #64748b;
+  margin: 10px 0;
 }
 
-.w-100 {
-  width: 100%;
+/* FOOTER */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #334155;
 }
 
-.mb-10 {
-  margin-bottom: 10px;
+.delete-pet-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px;
+  transition: opacity 0.2s;
 }
+
+.delete-pet-btn:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.w-100 { width: 100%; }

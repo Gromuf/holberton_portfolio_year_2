@@ -11,6 +11,9 @@ import PetCard from "../components/Pets/PetCard";
 import PetModal from "../components/Pets/PetModal";
 import PetForm from "../components/Pets/PetForm";
 
+// --- IMPORT DU CSS MODULE ---
+import styles from "./Home.module.css";
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -43,13 +46,12 @@ export default function Home() {
     fetchMyData,
   } = useHome(navigate);
 
-  // --- CORRECTION : Harmonisation des noms pour le "câblage" ---
+  // Harmonisation des noms pour le "câblage"
   const socialProps = {
     pets,
     mySelectedPetId,
     setMySelectedPetId,
     pendingRequests,
-    // On utilise les noms attendus par MainLayout.jsx et SocialSection.jsx
     onAcceptRequest: handleAcceptRequest,
     onRejectRequest: async (id) => {
       try {
@@ -74,20 +76,19 @@ export default function Home() {
       logout={logout}
       {...socialProps}
     >
-      {/* Flux central des animaux */}
-      <div className="pet-grid">
+      {/* --- UTILISATION DE LA CLASSE petGrid DU MODULE --- */}
+      <div className={styles.petGrid}>
         {pets.length > 0 ? (
           pets.map((pet) => (
             <PetCard
               key={pet.id}
               pet={pet}
               onOpen={openProfile}
-              onDelete={handleDeletePet}
-              onUpload={handleImageUpload}
+              // onDelete et onUpload retirés car gérés ailleurs maintenant
             />
           ))
         ) : (
-          <p style={{ color: "#94a3b8", textAlign: "center", padding: "20px" }}>
+          <p style={{ color: "#94a3b8", textAlign: "center", padding: "20px", width: "100%" }}>
             Aucun animal trouvé. Cliquez sur "+" à gauche pour commencer !
           </p>
         )}
@@ -105,6 +106,9 @@ export default function Home() {
             openProfile(selectedPetForProfile);
           }}
           onClose={() => setSelectedPetForProfile(null)}
+          // --- AJOUTE CES DEUX LIGNES : ---
+          onDelete={handleDeletePet}
+          onUpload={handleImageUpload}
         />
       )}
 

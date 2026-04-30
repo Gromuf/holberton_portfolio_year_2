@@ -1,25 +1,17 @@
-import Button from "../Common/Button";
 import "./PetCard.css";
 
-export default function PetCard({ pet, onOpen, onDelete, onUpload }) {
+export default function PetCard({ pet, onOpen }) {
+  const imageUrl = pet.imageUrl || "/default-pet.png";
+
   return (
-    <div className="pet-card-item">
-      <div className="avatar-section">
-        <img src={pet.imageUrl || "/default-pet.png"} alt={pet.name} onClick={() => onOpen(pet)} />
-        <label className="upload-label">
-          Changer <input type="file" hidden accept="image/*" onChange={(e) => onUpload(pet.id, e.target.files[0])} />
-        </label>
+    <div className="pet-mini-card" onClick={() => onOpen(pet)}>
+      <div className="card-img-wrapper">
+        <img src={imageUrl} alt={pet.name} />
       </div>
-      <div className="info-section" onClick={() => onOpen(pet)}>
+      <div className="card-overlay">
         <h4>{pet.name}</h4>
-        <p>{pet.species}</p>
-        <span className={`badge ${pet.isWalking ? "walking" : "home"}`}>
-          {pet.isWalking ? "🏃 En balade" : "🏠 À la maison"}
-        </span>
+        {pet.isWalking && <span className="walking-dot" title="En balade"></span>}
       </div>
-      <Button className="delete-btn" onClick={() => onDelete(pet.id)} variant="danger">
-        Delete
-      </Button>
     </div>
   );
 }
