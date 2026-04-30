@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,6 +57,28 @@ public class PetController {
 
 		String currrentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
 		return petService.savePetWithCurrentEmail(pet, currrentUserEmail);
+	}
+
+	@PutMapping("/{id}") 
+	public Pet updatePet(@PathVariable Long id, @Valid @RequestBody Pet petDetails) {
+		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+		
+        Pet existingPet = petRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Pet not found"));
+
+		// Vérification de sécurité : seul le propriétaire peut modifier
+		if (!existingPet.getOwner().getEmail().equals(currentUserEmail)) {
+			throw new RuntimeException("You are not authorized to update this pet");
+		}
+
+		// Mise à jour des champs autorisés
+		existingPet.setName(petDetails.getName());
+		existingPet.setSpecies(petDetails.getSpecies());
+		existingPet.setAge(petDetails.getAge());
+		existingPet.setBio(petDetails.getBio());
+		existingPet.setWalking(petDetails.isWalking());
+
+		return petRepository.save(existingPet);
 	}
 
 	@PostMapping("/{id}/upload-image") // Endpoint pour uploader une image pour un animal spécifique

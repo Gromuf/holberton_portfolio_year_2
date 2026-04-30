@@ -42,6 +42,12 @@ public class Pet {
 	@Column(nullable = false)
 	private boolean isWalking = false; // par defaut le pet n'est pas en balade
 
+	@Column(name = "age")
+	private Integer age; // Integer permet d'avoir la valeur "null" si non renseignée au début
+
+	@Column(name = "bio", length = 500)
+	private String bio;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false) // Clé étrangère vers la table users
 	@JsonIgnoreProperties("pets") // pour éviter la récursion infinie lors de la sérialisation JSON
