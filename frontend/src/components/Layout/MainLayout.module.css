@@ -12,6 +12,11 @@
   padding: 80px 20px 20px;
 }
 
+/* --- NOUVELLE CLASSE POUR ADAPTER LA GRILLE --- */
+.noRightSidebar {
+  grid-template-columns: 250px 1fr;
+}
+
 .mainContent {
   min-width: 0;
 }
@@ -20,6 +25,10 @@
   .gridContainer {
     grid-template-columns: 1fr; /* Une seule colonne */
     padding-top: 80px;
+  }
+
+  .noRightSidebar {
+    grid-template-columns: 1fr;
   }
 
   /* Cache les éléments ayant la classe simple "sidebar" */

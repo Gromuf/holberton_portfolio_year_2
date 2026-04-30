@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 
 // Import des Composants de structure
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
@@ -28,6 +29,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 5. Profil (Privé - nécessite un Token) */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

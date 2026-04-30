@@ -1,0 +1,150 @@
+.profileContainer {
+  padding: 20px 40px;
+  color: #f1f5f9;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* SECTION PARAMETRES */
+.settingsSection {
+  margin-bottom: 30px;
+}
+
+.sectionHeading {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.userInfoRow {
+  display: flex;
+  gap: 50px;
+  margin-bottom: 20px;
+  font-size: 1.05rem;
+  color: #cbd5e1;
+}
+
+.userActions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.deleteAccountBtn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 15px;
+}
+
+.deleteAccountBtn:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #334155;
+  margin: 40px 0;
+}
+
+/* SECTION ANIMAUX */
+.petsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.petDetailCard {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  display: flex;
+  overflow: hidden;
+  padding: 15px;
+}
+
+.petImageWrapper {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  border: 1px solid #334155;
+  margin-right: 25px;
+}
+
+.petImageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petInfoBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.petHeader h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.petStats {
+  color: #cbd5e1;
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+}
+
+.petBio {
+  color: #94a3b8;
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+}
+
+.petFriendsCount {
+  color: #ffffff;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  font-size: 0.95rem;
+}
+
+.petActions {
+  display: flex;
+  gap: 15px;
+  margin-top: auto;
+}
+
+.editBtn {
+  background-color: transparent;
+  color: #f1f5f9;
+  border: 1px solid #64748b;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.editBtn:hover {
+  background-color: #334155;
+}
+
+.deleteBtn {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.deleteBtn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.loadingText {
+  color: #94a3b8;
+  font-style: italic;
+}
