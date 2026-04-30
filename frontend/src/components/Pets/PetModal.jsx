@@ -1,17 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../Common/Button";
 import "./PetModal.css";
 
 export default function PetModal({ 
   pet, 
-  friends, 
-  showFriends, 
-  setShowFriends, 
-  onRemoveFriend, 
   onClose,
-  onDelete,  // Nouvel ajout : pour supprimer depuis la modale
-  onUpload   // Nouvel ajout : pour changer la photo depuis la modale
+  onDelete,
+  onUpload 
 }) {
+  const navigate = useNavigate();
+
   if (!pet) return null;
 
   return (
@@ -26,7 +25,6 @@ export default function PetModal({
               alt={pet.name} 
               className="modal-img"
             />
-            {/* Bouton d'upload caché derrière un label */}
             <label className="upload-btn">
               Modifier
               <input 
@@ -56,35 +54,18 @@ export default function PetModal({
           </div>
         )}
 
-        {/* SECTION AMIS */}
-        <div className="modal-friends-section">
+        {/* BOUTON : Voir le profil complet */}
+        <div className="modal-actions">
           <Button 
             variant="action" 
-            className="w-100 mb-10 toggle-friends-btn"
-            onClick={() => setShowFriends(!showFriends)}
+            className="w-100"
+            onClick={() => {
+              onClose(); // Ferme la modale
+              navigate(`/pet/${pet.id}`); // Redirige vers la page du profil
+            }}
           >
-            {showFriends ? "Masquer les amis" : `Voir ses amis (${friends.length})`}
+          Voir le profil complet
           </Button>
-
-          {showFriends && (
-            <div className="friends-scroll-box">
-              {friends.length === 0 ? (
-                <p className="no-friends">Aucun ami pour le moment.</p>
-              ) : (
-                friends.map((f) => (
-                  <div key={f.friendshipId} className="friend-list-item">
-                    <span>{f.name}</span>
-                    <button 
-                      className="btn-remove"
-                      onClick={() => onRemoveFriend(f.friendshipId)}
-                    >
-                      Retirer
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
         </div>
 
         {/* PIED DE PAGE : Actions destructrices et fermeture */}
@@ -98,7 +79,7 @@ export default function PetModal({
               }
             }}
           >
-          Supprimer l'animal
+          Supprimer
           </button>
           <Button variant="ghost" onClick={onClose} className="close-btn">
             Fermer

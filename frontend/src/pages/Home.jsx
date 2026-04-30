@@ -98,15 +98,7 @@ export default function Home() {
       {selectedPetForProfile && selectedPetForProfile !== "new" && (
         <PetModal
           pet={selectedPetForProfile}
-          friends={friendsList}
-          showFriends={showFriends}
-          setShowFriends={setShowFriends}
-          onRemoveFriend={async (fid) => {
-            await api.delete(`/friendships/${fid}`);
-            openProfile(selectedPetForProfile);
-          }}
           onClose={() => setSelectedPetForProfile(null)}
-          // --- AJOUTE CES DEUX LIGNES : ---
           onDelete={handleDeletePet}
           onUpload={handleImageUpload}
         />
