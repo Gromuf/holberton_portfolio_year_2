@@ -3,11 +3,18 @@ import MainLayout from "../components/Layout/MainLayout";
 import Button from "../components/Common/Button";
 import api from "../api/client";
 import styles from "./Profile.module.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({ name: "Chargement...", email: "..." });
   const [myPets, setMyPets] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // (ou le nom exact de la clé où tu stockes ton JWT)
+    navigate("/login"); // (ou la route de ta page de connexion)
+  };
 
   useEffect(() => {
     fetchProfileData();
@@ -15,13 +22,12 @@ export default function Profile() {
 
   const fetchProfileData = async () => {
     try {
-      // 1. Récupération des infos de l'utilisateur (à adapter selon ta route exacte)
-      const userRes = await api.get("/users/me").catch(() => ({
-        data: { name: "John Doe", email: "john.doe@mail.com" } // Fallback temporaire
+      // L'URL a été modifiée ici pour utiliser la nouvelle route
+      const userRes = await api.get("/users/profile/me").catch(() => ({
+        data: { name: "Erreur", email: "erreur" }
       }));
       setUserData(userRes.data);
 
-      // 2. Récupération des animaux du propriétaire (utilise ton PetController existant)
       const petsRes = await api.get("/pets");
       setMyPets(petsRes.data);
     } catch (error) {
@@ -43,10 +49,9 @@ export default function Profile() {
   };
 
   return (
-    <MainLayout hideRightSidebar={true}>
+    <MainLayout hideRightSidebar={true} logout={handleLogout}>
       <div className={styles.profileContainer}>
         
-        {/* SECTION 1 : MES PARAMÈTRES */}
         <div className={styles.settingsSection}>
           <h2 className={styles.sectionHeading}>MES PARAMÈTRES</h2>
           
@@ -63,7 +68,6 @@ export default function Profile() {
 
         <hr className={styles.divider} />
 
-        {/* SECTION 2 : DÉTAILS DE MES ANIMAUX */}
         <div className={styles.petsSection}>
           <h2 className={styles.sectionHeading}>DÉTAILS DE MES ANIMAUX</h2>
           
@@ -92,7 +96,6 @@ export default function Profile() {
                     )}
                     
                     <p className={styles.petFriendsCount}>
-                      {/* Placeholder en attendant d'avoir la logique des amis comptés */}
                       12 Amis
                     </p>
                     
