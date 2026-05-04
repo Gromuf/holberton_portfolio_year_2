@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import NotificationList from "./NotificationList";
 import Button from "../Common/Button";
 import Input from "../Common/Input";
+import { useSocialSection } from "../../hooks/useSocialSection";
 import styles from "./SocialSection.module.css";
 
 export default function SocialSection({ 
   onAcceptRequest, 
   onRejectRequest, 
   pendingRequests,
-  pets, // Tes propres animaux pour le <select>
+  pets, 
   mySelectedPetId, 
   setMySelectedPetId, 
   searchQuery, 
@@ -19,42 +20,24 @@ export default function SocialSection({
   selectedUserPets, 
   sendFriendRequest 
 }) {
-  // --- ÉTATS LOCAUX POUR LA NAVIGATION DU TUNNEL ---
-  const [currentStep, setCurrentStep] = useState('SEARCH'); // SEARCH | OWNER | DETAILS
-  const [selectedOwner, setSelectedOwner] = useState(null);
-  const [selectedTargetPet, setSelectedTargetPet] = useState(null);
-
-  // --- LOGIQUE DE NAVIGATION ---
-  const handleOwnerClick = async (user) => {
-    setSelectedOwner(user);
-    await viewUserPets(user.id); // Charge les animaux de cet humain
-    setCurrentStep('OWNER');
-  };
-
-  const handlePetClick = (pet) => {
-    setSelectedTargetPet(pet);
-    setCurrentStep('DETAILS');
-  };
-
-  const goBack = () => {
-    if (currentStep === 'DETAILS') {
-      setCurrentStep('OWNER');
-    } else {
-      setCurrentStep('SEARCH');
-      setSelectedOwner(null);
-    }
-  };
+  const {
+    currentStep,
+    selectedOwner,
+    selectedTargetPet,
+    handleOwnerClick,
+    handlePetClick,
+    goBack,
+    resetStep
+  } = useSocialSection(viewUserPets);
 
   return (
     <div className={styles.socialContainer}>
-      {/* 1. NOTIFICATIONS (Toujours en haut) */}
       <NotificationList 
         requests={pendingRequests} 
         onAccept={onAcceptRequest} 
         onReject={onRejectRequest} 
       />
 
-      {/* 2. ÉTAPE : RECHERCHE D'HUMAIN */}
       {currentStep === 'SEARCH' && (
         <div className={styles.searchSection}>
           <form onSubmit={onSearch} className={styles.searchBox}>
@@ -75,7 +58,6 @@ export default function SocialSection({
         </div>
       )}
 
-      {/* 3. ÉTAPE : LISTE DES ANIMAUX DE L'HUMAIN SÉLECTIONNÉ */}
       {currentStep === 'OWNER' && (
         <div className={styles.stepContainer}>
           <button onClick={goBack} className={styles.backLink}>← Retour</button>
@@ -91,7 +73,6 @@ export default function SocialSection({
         </div>
       )}
 
-      {/* 4. ÉTAPE : DÉTAILS ET DEMANDE D'AMI */}
       {currentStep === 'DETAILS' && (
         <div className={styles.stepContainer}>
           <button onClick={goBack} className={styles.backLink}>← Retour</button>
@@ -117,8 +98,7 @@ export default function SocialSection({
               variant="success" 
               onClick={() => {
                 sendFriendRequest(selectedTargetPet.id);
-                // Optionnel : revenir au début après l'envoi
-                setCurrentStep('SEARCH');
+                resetStep();
               }}
               disabled={!mySelectedPetId}
               style={{width: '100%'}}

@@ -1,40 +1,16 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/client";
+import { useHeader } from "../../hooks/useHeader";
 import styles from "./Header.module.css";
 import MobileMenu from "./MobileMenu";
 
 export default function Header({ logout, onAddPetClick, ...socialProps }) {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState({ name: "" });
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // L'URL a été modifiée ici pour utiliser la nouvelle route
-        const res = await api.get("/users/profile/me");
-        setCurrentUser(res.data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération de l'utilisateur :", error);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const getInitials = (name) => {
-    if (!name) return "";
-    const nameParts = name.trim().split(" ");
-    if (nameParts.length >= 2) {
-      return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-  };
+  const { currentUser, isMenuOpen, getInitials, toggleMenu, closeMenu } = useHeader();
 
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <div className={styles.burgerMenu} onClick={() => setIsMenuOpen(true)}>
+        <div className={styles.burgerMenu} onClick={toggleMenu}>
           <span></span>
           <span></span>
           <span></span>
@@ -51,7 +27,7 @@ export default function Header({ logout, onAddPetClick, ...socialProps }) {
       </div>
       {isMenuOpen && (
         <MobileMenu 
-          onClose={() => setIsMenuOpen(false)} 
+          onClose={closeMenu} 
           logout={logout} 
           onAddPetClick={onAddPetClick}
           {...socialProps} 

@@ -1,52 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import Button from "../components/Common/Button";
-import api from "../api/client";
+import { useProfile } from "../hooks/useProfile";
 import styles from "./Profile.module.css";
-import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({ name: "Chargement...", email: "..." });
-  const [myPets, setMyPets] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // (ou le nom exact de la clé où tu stockes ton JWT)
-    navigate("/login"); // (ou la route de ta page de connexion)
-  };
-
-  useEffect(() => {
-    fetchProfileData();
-  }, []);
-
-  const fetchProfileData = async () => {
-    try {
-      // L'URL a été modifiée ici pour utiliser la nouvelle route
-      const userRes = await api.get("/users/profile/me").catch(() => ({
-        data: { name: "Erreur", email: "erreur" }
-      }));
-      setUserData(userRes.data);
-
-      const petsRes = await api.get("/pets");
-      setMyPets(petsRes.data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeletePet = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer cet animal ?")) {
-      try {
-        await api.delete(`/pets/${id}`);
-        setMyPets(myPets.filter(pet => pet.id !== id));
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
-    }
-  };
+  const { userData, myPets, loading, handleDeletePet, handleLogout } = useProfile(navigate);
 
   return (
     <MainLayout hideRightSidebar={true} logout={handleLogout}>
