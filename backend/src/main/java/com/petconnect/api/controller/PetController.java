@@ -52,6 +52,14 @@ public class PetController {
         return petRepository.findByOwnerId(ownerId);
     }
 
+	@GetMapping("/{id}") // Endpoint pour récupérer un animal par son ID
+	public org.springframework.http.ResponseEntity<Pet> getPetById(@PathVariable Long id) {
+		Pet pet = petRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Pet not found"));
+		
+		return org.springframework.http.ResponseEntity.ok(pet);
+	}
+
 	@PostMapping // Endpoint pour créer un nouvel animal
 	public Pet createPet(@Valid @RequestBody Pet pet) {
 

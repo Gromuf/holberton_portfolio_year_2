@@ -1,0 +1,90 @@
+.petProfileContainer {
+  background-color: rgba(30, 41, 59, 0.95); /* Opacité uniquement sur le background */
+  border-radius: 12px;
+  padding: 30px;
+  color: #f1f5f9; /* Texte opaque */
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid #334155;
+}
+
+.headerSection {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 250px;
+}
+
+.petImage {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #334155;
+}
+
+.uploadBtn {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.petInfo h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.bioBox {
+  background-color: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.petSelect {
+  padding: 8px;
+  border-radius: 6px;
+  background: #0f172a;
+  color: white;
+  border: 1px solid #334155;
+  margin-right: 10px;
+}
+
+.friendsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.friendCard {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.friendCard img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
