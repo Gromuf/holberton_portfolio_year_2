@@ -8,11 +8,16 @@ import styles from "./PetProfile.module.css";
 export default function PetProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { pet, friends, loading, isOwner, myPets, handleImageUpload, sendFriendRequest } = usePetProfile(id);
+  const { 
+    pet, friends, loading, isOwner, myPets, handleImageUpload, 
+    isEditingBio, setIsEditingBio, tempBio, setTempBio, updatePetBio, sendFriendRequest 
+  } = usePetProfile(id);
+
   const handleLogout = () => {
-	localStorage.removeItem("token");
-	navigate("/login");
+    localStorage.removeItem("token");
+    navigate("/login");
   };
+
   const [selectedMyPetId, setSelectedMyPetId] = useState("");
 
   if (loading) {
@@ -34,7 +39,6 @@ export default function PetProfile() {
   return (
     <MainLayout hideRightSidebar={true} logout={handleLogout}>
       <div className={styles.petProfileContainer}>
-        
         <div className={styles.headerSection}>
           <div className={styles.imageContainer}>
             <img 
@@ -63,8 +67,37 @@ export default function PetProfile() {
             <p className={styles.tagline}>{pet.species} • {pet.age ? `${pet.age} ans` : "Âge inconnu"}</p>
             
             <div className={styles.bioBox}>
-              <p><strong>À propos :</strong></p>
-              <p>{pet.bio || "Pas encore de description pour ce compagnon."}</p>
+              <div className={styles.bioHeader}>
+                <h3>À propos</h3>
+                {isOwner && !isEditingBio && (
+                  <Button 
+                    variant="action" 
+                    className={styles.editTriggerBtn}
+                    onClick={() => setIsEditingBio(true)}
+                  >
+                    Modifier la description
+                  </Button>
+                )}
+              </div>
+
+              {isEditingBio ? (
+                <div className={styles.editBioContainer}>
+                  <textarea
+                    className={styles.bioInput}
+                    value={tempBio}
+                    onChange={(e) => setTempBio(e.target.value)}
+                    placeholder="Décrivez votre compagnon..."
+                  />
+                  <div className={styles.editBioActions}>
+                    <Button variant="success" onClick={updatePetBio}>Enregistrer</Button>
+                    <Button variant="ghost" onClick={() => setIsEditingBio(false)}>Annuler</Button>
+                  </div>
+                </div>
+              ) : (
+                <p className={styles.bioText}>
+                  {pet.bio || "Pas encore de description pour ce compagnon."}
+                </p>
+              )}
             </div>
             
             {!isOwner && (
@@ -95,7 +128,6 @@ export default function PetProfile() {
 
         <div className={styles.friendsSection}>
           <h2>LES AMIS DE {pet.name.toUpperCase()} ({friends.length})</h2>
-          
           {friends.length > 0 ? (
             <div className={styles.friendsGrid}>
               {friends.map(friend => (
@@ -113,7 +145,6 @@ export default function PetProfile() {
             <p className={styles.noFriendsText}>Aucun ami pour le moment.</p>
           )}
         </div>
-
       </div>
     </MainLayout>
   );

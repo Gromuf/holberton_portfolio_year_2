@@ -1,8 +1,8 @@
 .petProfileContainer {
-  background-color: rgba(30, 41, 59, 0.95); /* Opacité uniquement sur le background */
+  background-color: rgba(30, 41, 59, 0.95);
   border-radius: 12px;
   padding: 30px;
-  color: #f1f5f9; /* Texte opaque */
+  color: #f1f5f9;
   max-width: 900px;
   margin: 0 auto;
   border: 1px solid #334155;
@@ -45,19 +45,93 @@
   margin-bottom: 10px;
 }
 
+.ownerText {
+  color: #3b82f6;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
 .tagline {
   color: #94a3b8;
   font-size: 1.1rem;
   margin-bottom: 20px;
 }
 
+/* Section Bio */
 .bioBox {
   background-color: #0f172a;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  border: 1px solid #1e293b;
 }
 
+.bioHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.bioHeader h3 {
+  font-size: 1rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.editTriggerBtn {
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+  height: auto !important;
+}
+
+.bioText {
+  line-height: 1.6;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+}
+
+.editBioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bioInput {
+  width: 100%;
+  min-height: 120px;
+  background: #020617;
+  border: 1px solid #334155;
+  color: #f1f5f9;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.bioInput:focus {
+  outline: none;
+  border-color: #3d5afe;
+  box-shadow: 0 0 0 3px rgba(61, 90, 254, 0.1);
+}
+
+.editBioActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.editBioActions button {
+  padding: 8px 16px !important;
+  font-size: 0.9rem !important;
+}
+
+/* Autres styles */
 .petSelect {
   padding: 8px;
   border-radius: 6px;
@@ -67,11 +141,16 @@
   margin-right: 10px;
 }
 
+.divider {
+  border: 0;
+  border-top: 1px solid #334155;
+  margin: 40px 0;
+}
+
 .friendsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: 15px;
-  margin-top: 20px;
 }
 
 .friendCard {
@@ -87,4 +166,10 @@
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.message {
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px;
 }

@@ -6,60 +6,70 @@ export function usePetProfile(petId) {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
-  const [myPets, setMyPets] = useState([]); // Pour le menu déroulant de demande d'ami
+  const [myPets, setMyPets] = useState([]);
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [tempBio, setTempBio] = useState("");
 
   useEffect(() => {
-    if (petId) {
-      fetchPetData();
-    }
+    if (petId) fetchPetData();
   }, [petId]);
 
   const fetchPetData = async () => {
     try {
       setLoading(true);
-
-      // 1. Récupérer les animaux de l'utilisateur connecté
+      // On retire "/api" car Axios l'ajoute déjà tout seul
       const myPetsRes = await api.get("/pets");
-      const myOwnPets = Array.isArray(myPetsRes.data)
-        ? myPetsRes.data
-        : myPetsRes.data?.pets || [];
+      const myOwnPets = Array.isArray(myPetsRes.data) ? myPetsRes.data : [];
       setMyPets(myOwnPets);
 
-      // 2. Récupérer les infos de l'animal consulté
       const petRes = await api.get(`/pets/${petId}`);
-      const fetchedPet = petRes.data;
-      setPet(fetchedPet);
+      setPet(petRes.data);
+      setTempBio(petRes.data.bio || "");
 
-      // 3. Vérifier si l'utilisateur courant possède cet animal
       const ownsThisPet = myOwnPets.some((p) => p.id === parseInt(petId));
       setIsOwner(ownsThisPet);
 
-      // 4. Récupérer les amis de cet animal
       const friendsRes = await api.get(`/friendships/pet/${petId}/friends`);
       setFriends(friendsRes.data);
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération du profil de l'animal :",
-        error,
-      );
+      console.error("Erreur récupération profil:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updatePetBio = async () => {
+    try {
+      const payload = {
+        id: pet.id,
+        name: pet.name,
+        species: pet.species,
+        age: pet.age,
+        bio: tempBio,
+        imageUrl: pet.imageUrl,
+        walking: pet.walking ?? pet.isWalking ?? false,
+        isWalking: pet.isWalking ?? pet.walking ?? false,
+      };
+
+      await api.put(`/pets/${petId}`, payload);
+
+      setIsEditingBio(false);
+      fetchPetData();
+    } catch (error) {
+      console.error("Erreur mise à jour:", error.response?.data);
     }
   };
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     const data = new FormData();
     data.append("file", file);
-
     try {
       await api.post(`/pets/${petId}/upload-image`, data);
       fetchPetData();
     } catch (error) {
-      console.error("Erreur lors de l'upload de l'image :", error);
-      alert("Erreur lors du changement de la photo.");
+      console.error("Erreur upload:", error);
     }
   };
 
@@ -69,6 +79,11 @@ export function usePetProfile(petId) {
     loading,
     isOwner,
     myPets,
+    isEditingBio,
+    setIsEditingBio,
+    tempBio,
+    setTempBio,
+    updatePetBio,
     handleImageUpload,
   };
 }
