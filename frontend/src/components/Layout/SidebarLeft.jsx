@@ -1,9 +1,12 @@
 import Button from "../Common/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./SidebarLeft.module.css";
 
 export default function SidebarLeft({ onAddPetClick }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const showAddPetButton = location.pathname === "/home" || location.pathname === "/profile";
 
   return (
     <aside className={styles.sidebar}>
@@ -12,9 +15,11 @@ export default function SidebarLeft({ onAddPetClick }) {
         <Button variant="ghost" onClick={() => navigate("/messages")} className={styles.navBtn}>📩 Messages</Button>
         <Button variant="ghost" onClick={() => navigate("/profile")} className={styles.navBtn}>👤 Profil</Button>
       </nav>
-      <div className={styles.actionGroup}>
-        <Button variant="success" onClick={onAddPetClick} className={styles.addPetBtn}>+ Ajouter un animal</Button>
-      </div>
+      {showAddPetButton && (
+        <div className={styles.actionGroup}>
+          <Button variant="success" onClick={onAddPetClick} className={styles.addPetBtn}>Ajouter un animal</Button>
+        </div>
+      )}
     </aside>
   );
 }

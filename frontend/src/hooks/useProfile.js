@@ -8,6 +8,13 @@ export function useProfile(navigate) {
   });
   const [myPets, setMyPets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    species: "",
+    age: "",
+    bio: "",
+  });
 
   useEffect(() => {
     fetchProfileData();
@@ -45,10 +52,28 @@ export function useProfile(navigate) {
     navigate("/login");
   };
 
+  const handleAddPet = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post("/pets", { ...formData, isWalking: false, imageUrl: "" });
+      setFormData({ name: "", species: "", age: "", bio: "" }); // On vide le formulaire
+      setIsAddModalOpen(false); // On ferme la modale
+      fetchProfileData(); // On rafraîchit la liste pour voir le petit nouveau !
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'ajout de l'animal");
+    }
+  };
+
   return {
     userData,
     myPets,
     loading,
+    isAddModalOpen,
+    setIsAddModalOpen,
+    formData,
+    setFormData,
+    handleAddPet,
     handleDeletePet,
     handleLogout,
   };

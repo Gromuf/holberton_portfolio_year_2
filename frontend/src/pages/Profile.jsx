@@ -2,15 +2,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import Button from "../components/Common/Button";
+import PetForm from "../components/Pets/PetForm";
 import { useProfile } from "../hooks/useProfile";
 import styles from "./Profile.module.css";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { userData, myPets, loading, handleDeletePet, handleLogout } = useProfile(navigate);
+  const { userData, myPets, loading, handleDeletePet, handleLogout, isAddModalOpen, setIsAddModalOpen, formData, setFormData, handleAddPet } = useProfile(navigate);
 
   return (
-    <MainLayout hideRightSidebar={true} logout={handleLogout}>
+    <MainLayout hideRightSidebar={true} logout={handleLogout} onAddPetClick={() => setIsAddModalOpen(true)} >
       <div className={styles.profileContainer}>
         
         <div className={styles.settingsSection}>
@@ -26,6 +27,31 @@ export default function Profile() {
             <button className={styles.deleteAccountBtn}>Supprimer mon compte</button>
           </div>
         </div>
+        {isAddModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Ajouter un compagnon</h3>
+            <PetForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleAddPet}
+            />
+            <button 
+              onClick={() => setIsAddModalOpen(false)}
+              style={{ 
+                marginTop: "15px", 
+                background: "none", 
+                border: "none", 
+                color: "#94a3b8", 
+                cursor: "pointer",
+                textDecoration: "underline" 
+              }}
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
 
         <hr className={styles.divider} />
 
