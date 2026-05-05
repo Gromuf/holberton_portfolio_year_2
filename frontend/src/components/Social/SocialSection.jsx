@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import NotificationList from "./NotificationList";
 import Button from "../Common/Button";
 import Input from "../Common/Input";
@@ -20,6 +21,7 @@ export default function SocialSection({
   selectedUserPets, 
   sendFriendRequest 
 }) {
+  const navigate = useNavigate();
   const {
     currentStep,
     selectedOwner,
@@ -50,7 +52,7 @@ export default function SocialSection({
           <div className={styles.resultsList}>
             {searchResults && searchResults.map(user => (
               <div key={user.id} className={styles.userItem} onClick={() => handleOwnerClick(user)}>
-                <span>👤 {user.name}</span>
+                <span>{user.name}</span>
                 <span style={{color: '#3d5afe'}}>❯</span>
               </div>
             ))}
@@ -60,12 +62,12 @@ export default function SocialSection({
 
       {currentStep === 'OWNER' && (
         <div className={styles.stepContainer}>
-          <button onClick={goBack} className={styles.backLink}>← Retour</button>
+          <button onClick={goBack} className={styles.backLink}>Retour</button>
           <h4>Animaux de {selectedOwner?.name}</h4>
           <div className={styles.resultsList}>
             {selectedUserPets && selectedUserPets.map(pet => (
               <div key={pet.id} className={styles.petItem} onClick={() => handlePetClick(pet)}>
-                <span>🐾 {pet.name}</span>
+                <span>{pet.name}</span>
                 <span style={{fontSize: '0.8rem', color: '#94a3b8'}}>{pet.species}</span>
               </div>
             ))}
@@ -75,11 +77,17 @@ export default function SocialSection({
 
       {currentStep === 'DETAILS' && (
         <div className={styles.stepContainer}>
-          <button onClick={goBack} className={styles.backLink}>← Retour</button>
+          <button onClick={goBack} className={styles.backLink}>Retour</button>
           <h4>{selectedTargetPet?.name}</h4>
           <div className={styles.actionCard}>
             <p className={styles.label}>Option A</p>
-            <Button variant="ghost" disabled style={{width: '100%'}}>📖 Voir le profil</Button>
+            <Button 
+              variant="action" 
+              onClick={() => navigate(`/pet/${selectedTargetPet.id}`)}
+              style={{width: '100%'}}
+            >
+              Voir le profil
+            </Button>
             
             <hr className={styles.divider} />
             
