@@ -44,6 +44,15 @@ function App() {
           }
         />
 
+        <Route
+          path="/profile/:userId"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
         {/* 6. Profil de l'animal (Privé - nécessite un Token) */}
         <Route
           path="/pet/:id"

@@ -6,6 +6,7 @@
   max-width: 900px;
   margin: 0 auto;
   border: 1px solid #334155;
+  min-height: fit-content; /* S'adapte au contenu */
 }
 
 .headerSection {
@@ -40,15 +41,38 @@
   font-weight: 600;
 }
 
-.petInfo h1 {
+.petInfo {
+  flex: 1; /* Occupe tout l'espace a droite */
+  display: flex;
+  flex-direction: column;
+}
+
+.nameRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.nameRow h1 {
   font-size: 2.2rem;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .ownerText {
+  font-size: 0.95rem;
+  color: #94a3b8;
+}
+
+.ownerLink {
   color: #3b82f6;
-  font-size: 1.1rem;
-  margin-bottom: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.ownerLink:hover {
+  text-decoration: underline;
 }
 
 .tagline {
@@ -57,88 +81,64 @@
   margin-bottom: 20px;
 }
 
-/* Section Bio */
 .bioBox {
   background-color: #0f172a;
   padding: 20px;
   border-radius: 12px;
-  margin-bottom: 25px;
   border: 1px solid #1e293b;
-}
-
-.bioHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .bioHeader h3 {
-  font-size: 1rem;
-  color: #94a3b8;
+  font-size: 0.8rem;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0;
+  letter-spacing: 0.1em;
+  margin: 0 0 10px 0;
 }
 
-.editTriggerBtn {
-  padding: 6px 12px !important;
-  font-size: 0.8rem !important;
-  height: auto !important;
+.bioContentWrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .bioText {
   line-height: 1.6;
   color: #cbd5e1;
   white-space: pre-wrap;
+  margin: 0 0 15px 0;
+}
+
+.editTriggerBtn {
+  align-self: flex-end; /* Bouton en bas a droite */
+  padding: 6px 12px !important;
+  font-size: 0.75rem !important;
+  height: auto !important;
 }
 
 .editBioContainer {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .bioInput {
   width: 100%;
-  min-height: 120px;
+  min-height: 100px;
   background: #020617;
   border: 1px solid #334155;
   color: #f1f5f9;
   padding: 12px;
   border-radius: 8px;
-  font-family: inherit;
-  font-size: 0.95rem;
   resize: vertical;
   box-sizing: border-box;
-  transition: border-color 0.2s ease;
-}
-
-.bioInput:focus {
-  outline: none;
-  border-color: #3d5afe;
-  box-shadow: 0 0 0 3px rgba(61, 90, 254, 0.1);
 }
 
 .editBioActions {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-}
-
-.editBioActions button {
-  padding: 8px 16px !important;
-  font-size: 0.9rem !important;
-}
-
-/* Autres styles */
-.petSelect {
-  padding: 8px;
-  border-radius: 6px;
-  background: #0f172a;
-  color: white;
-  border: 1px solid #334155;
-  margin-right: 10px;
 }
 
 .divider {

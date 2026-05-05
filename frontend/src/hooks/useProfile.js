@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import api from "../api/client";
 
 export function useProfile(navigate) {
+  const { userId } = useParams();
   const [userData, setUserData] = useState({
     name: "Chargement...",
     email: "...",
@@ -16,24 +18,30 @@ export function useProfile(navigate) {
     bio: "",
   });
 
+  // Détermine si on est sur son propre profil ou celui d'un autre
+  const isMyOwnProfile = !userId;
+
   useEffect(() => {
     fetchProfileData();
-  }, []);
+  }, [userId]);
 
   const fetchProfileData = async () => {
     try {
       setLoading(true);
-      // 1. Récupérer les infos utilisateur
-      const userRes = await api.get("/users/profile/me").catch(() => ({
-        data: { name: "Erreur", email: "erreur" },
-      }));
+
+      // 1. Appel vers UserController.java (@GetMapping("/{id}"))
+      const userEndpoint = isMyOwnProfile
+        ? "/users/profile/me"
+        : `/users/${userId}`;
+      const userRes = await api.get(userEndpoint);
       setUserData(userRes.data);
 
-      // 2. Récupérer les animaux de l'utilisateur
-      const petsRes = await api.get("/pets");
+      // 2. Appel vers PetController.java (@GetMapping("/owner/{ownerId}"))
+      const petsEndpoint = isMyOwnProfile ? "/pets" : `/pets/owner/${userId}`;
+      const petsRes = await api.get(petsEndpoint);
       const basicPets = Array.isArray(petsRes.data) ? petsRes.data : [];
 
-      // 3. Récupérer dynamiquement le nombre d'amis pour chaque animal
+      // 3. Récupération du nombre d'amis
       const petsWithFriends = await Promise.all(
         basicPets.map(async (pet) => {
           try {
@@ -49,7 +57,8 @@ export function useProfile(navigate) {
 
       setMyPets(petsWithFriends);
     } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
+      console.error("Erreur chargement profil:", error);
+      setUserData({ name: "Utilisateur introuvable", email: "N/A" });
     } finally {
       setLoading(false);
     }
@@ -61,7 +70,7 @@ export function useProfile(navigate) {
         await api.delete(`/pets/${id}`);
         setMyPets(myPets.filter((pet) => pet.id !== id));
       } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
+        console.error("Erreur suppression :", error);
       }
     }
   };
@@ -80,7 +89,6 @@ export function useProfile(navigate) {
       fetchProfileData();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l'ajout de l'animal");
     }
   };
 
@@ -95,5 +103,6 @@ export function useProfile(navigate) {
     handleAddPet,
     handleDeletePet,
     handleLogout,
+    isMyOwnProfile,
   };
 }

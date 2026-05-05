@@ -10,7 +10,7 @@ export default function PetProfile() {
   const navigate = useNavigate();
   const { 
     pet, friends, loading, isOwner, myPets, handleImageUpload, 
-    isEditingBio, setIsEditingBio, tempBio, setTempBio, updatePetBio, sendFriendRequest 
+    isEditingBio, setIsEditingBio, tempBio, setTempBio, updatePetBio 
   } = usePetProfile(id);
 
   const handleLogout = () => {
@@ -18,66 +18,39 @@ export default function PetProfile() {
     navigate("/login");
   };
 
-  const [selectedMyPetId, setSelectedMyPetId] = useState("");
-
-  if (loading) {
-    return (
-      <MainLayout hideRightSidebar={true} logout={handleLogout}>
-        <p className={styles.message}>Chargement du profil de l'animal...</p>
-      </MainLayout>
-    );
-  }
-
-  if (!pet) {
-    return (
-      <MainLayout hideRightSidebar={true} logout={handleLogout}>
-        <p className={styles.message}>Animal introuvable.</p>
-      </MainLayout>
-    );
-  }
+  if (loading) return <MainLayout hideRightSidebar={true} logout={handleLogout}><p className={styles.message}>Chargement...</p></MainLayout>;
+  if (!pet) return <MainLayout hideRightSidebar={true} logout={handleLogout}><p className={styles.message}>Animal introuvable.</p></MainLayout>;
 
   return (
     <MainLayout hideRightSidebar={true} logout={handleLogout}>
       <div className={styles.petProfileContainer}>
         <div className={styles.headerSection}>
+          
           <div className={styles.imageContainer}>
-            <img 
-              src={pet.imageUrl || "/default-pet.png"} 
-              alt={pet.name} 
-              className={styles.petImage} 
-            />
+            <img src={pet.imageUrl || "/default-pet.png"} alt={pet.name} className={styles.petImage} />
             {isOwner && (
               <label className={styles.uploadBtn}>
                 Changer la photo
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleImageUpload} 
-                  style={{ display: "none" }} 
-                />
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
               </label>
             )}
           </div>
           
           <div className={styles.petInfo}>
-            <p className={styles.ownerText}>
-              Appartient à : <strong>{pet.owner?.name || "Un humain mystère"}</strong>
+            <div className={styles.nameRow}>
+              <h1>{pet.name.toUpperCase()}</h1>
+              <p className={styles.ownerText}>
+                Appartient à : <span className={styles.ownerLink} onClick={() => navigate(`/profile/${pet.owner?.id}`)}>{pet.owner?.name}</span>
+              </p>
+            </div>
+
+            <p className={styles.tagline}>
+              {pet.species} • {pet.age ? `${pet.age} ans` : "Age inconnu"}
             </p>
-            <h1>{pet.name.toUpperCase()}</h1>
-            <p className={styles.tagline}>{pet.species} • {pet.age ? `${pet.age} ans` : "Âge inconnu"}</p>
             
             <div className={styles.bioBox}>
               <div className={styles.bioHeader}>
-                <h3>À propos</h3>
-                {isOwner && !isEditingBio && (
-                  <Button 
-                    variant="action" 
-                    className={styles.editTriggerBtn}
-                    onClick={() => setIsEditingBio(true)}
-                  >
-                    Modifier la description
-                  </Button>
-                )}
+                <h3>A propos</h3>
               </div>
 
               {isEditingBio ? (
@@ -86,7 +59,6 @@ export default function PetProfile() {
                     className={styles.bioInput}
                     value={tempBio}
                     onChange={(e) => setTempBio(e.target.value)}
-                    placeholder="Décrivez votre compagnon..."
                   />
                   <div className={styles.editBioActions}>
                     <Button variant="success" onClick={updatePetBio}>Enregistrer</Button>
@@ -94,33 +66,22 @@ export default function PetProfile() {
                   </div>
                 </div>
               ) : (
-                <p className={styles.bioText}>
-                  {pet.bio || "Pas encore de description pour ce compagnon."}
-                </p>
+                <div className={styles.bioContentWrapper}>
+                  <p className={styles.bioText}>
+                    {pet.bio || "Pas encore de description pour ce compagnon."}
+                  </p>
+                  {isOwner && (
+                    <Button 
+                      variant="action" 
+                      className={styles.editTriggerBtn}
+                      onClick={() => setIsEditingBio(true)}
+                    >
+                      Modifier la description
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
-            
-            {!isOwner && (
-              <div className={styles.actionBox}>
-                <select 
-                  value={selectedMyPetId} 
-                  onChange={(e) => setSelectedMyPetId(e.target.value)}
-                  className={styles.petSelect}
-                >
-                  <option value="">Choisir mon animal...</option>
-                  {myPets.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
-                <Button 
-                  variant="success" 
-                  disabled={!selectedMyPetId}
-                  onClick={() => sendFriendRequest(selectedMyPetId)}
-                >
-                  Demander en ami
-                </Button>
-              </div>
-            )}
           </div>
         </div>
 
@@ -131,11 +92,7 @@ export default function PetProfile() {
           {friends.length > 0 ? (
             <div className={styles.friendsGrid}>
               {friends.map(friend => (
-                <div 
-                  key={friend.id} 
-                  className={styles.friendCard}
-                  onClick={() => navigate(`/pet/${friend.id}`)}
-                >
+                <div key={friend.id} className={styles.friendCard} onClick={() => navigate(`/pet/${friend.id}`)}>
                   <img src={friend.imageUrl || "/default-pet.png"} alt={friend.name} />
                   <p>{friend.name}</p>
                 </div>
