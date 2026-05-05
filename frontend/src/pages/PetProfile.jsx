@@ -17,7 +17,7 @@ export default function PetProfile() {
 
   if (loading) {
     return (
-      <MainLayout logout={handleLogout}>
+      <MainLayout hideRightSidebar={true} logout={handleLogout}>
         <p className={styles.message}>Chargement du profil de l'animal...</p>
       </MainLayout>
     );
@@ -25,14 +25,14 @@ export default function PetProfile() {
 
   if (!pet) {
     return (
-      <MainLayout logout={handleLogout}>
+      <MainLayout hideRightSidebar={true} logout={handleLogout}>
         <p className={styles.message}>Animal introuvable.</p>
       </MainLayout>
     );
   }
 
   return (
-    <MainLayout logout={handleLogout}>
+    <MainLayout hideRightSidebar={true} logout={handleLogout}>
       <div className={styles.petProfileContainer}>
         
         <div className={styles.headerSection}>
@@ -44,7 +44,7 @@ export default function PetProfile() {
             />
             {isOwner && (
               <label className={styles.uploadBtn}>
-                📷 Changer la photo
+                Changer la photo
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -56,6 +56,9 @@ export default function PetProfile() {
           </div>
           
           <div className={styles.petInfo}>
+            <p className={styles.ownerText}>
+              Appartient à : <strong>{pet.owner?.name || "Un humain mystère"}</strong>
+            </p>
             <h1>{pet.name.toUpperCase()}</h1>
             <p className={styles.tagline}>{pet.species} • {pet.age ? `${pet.age} ans` : "Âge inconnu"}</p>
             
