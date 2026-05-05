@@ -22,13 +22,32 @@ export function useProfile(navigate) {
 
   const fetchProfileData = async () => {
     try {
+      setLoading(true);
+      // 1. Récupérer les infos utilisateur
       const userRes = await api.get("/users/profile/me").catch(() => ({
         data: { name: "Erreur", email: "erreur" },
       }));
       setUserData(userRes.data);
 
+      // 2. Récupérer les animaux de l'utilisateur
       const petsRes = await api.get("/pets");
-      setMyPets(petsRes.data);
+      const basicPets = Array.isArray(petsRes.data) ? petsRes.data : [];
+
+      // 3. Récupérer dynamiquement le nombre d'amis pour chaque animal
+      const petsWithFriends = await Promise.all(
+        basicPets.map(async (pet) => {
+          try {
+            const friendsRes = await api.get(
+              `/friendships/pet/${pet.id}/friends`,
+            );
+            return { ...pet, friendsCount: friendsRes.data.length };
+          } catch (err) {
+            return { ...pet, friendsCount: 0 };
+          }
+        }),
+      );
+
+      setMyPets(petsWithFriends);
     } catch (error) {
       console.error("Erreur lors de la récupération des données :", error);
     } finally {
@@ -56,9 +75,9 @@ export function useProfile(navigate) {
     e.preventDefault();
     try {
       await api.post("/pets", { ...formData, isWalking: false, imageUrl: "" });
-      setFormData({ name: "", species: "", age: "", bio: "" }); // On vide le formulaire
-      setIsAddModalOpen(false); // On ferme la modale
-      fetchProfileData(); // On rafraîchit la liste pour voir le petit nouveau !
+      setFormData({ name: "", species: "", age: "", bio: "" });
+      setIsAddModalOpen(false);
+      fetchProfileData();
     } catch (err) {
       console.error(err);
       alert("Erreur lors de l'ajout de l'animal");

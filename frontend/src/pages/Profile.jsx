@@ -8,53 +8,43 @@ import styles from "./Profile.module.css";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { userData, myPets, loading, handleDeletePet, handleLogout, isAddModalOpen, setIsAddModalOpen, formData, setFormData, handleAddPet } = useProfile(navigate);
+  const { 
+    userData, 
+    myPets, 
+    loading, 
+    isAddModalOpen, 
+    setIsAddModalOpen, 
+    formData, 
+    setFormData, 
+    handleAddPet, 
+    handleDeletePet, 
+    handleLogout 
+  } = useProfile(navigate);
 
   return (
-    <MainLayout hideRightSidebar={true} logout={handleLogout} onAddPetClick={() => setIsAddModalOpen(true)} >
+    <MainLayout 
+      hideRightSidebar={true} 
+      logout={handleLogout} 
+      onAddPetClick={() => setIsAddModalOpen(true)} 
+    >
       <div className={styles.profileContainer}>
         
+        {/* SECTION PARAMÈTRES */}
         <div className={styles.settingsSection}>
           <h2 className={styles.sectionHeading}>MES PARAMÈTRES</h2>
-          
           <div className={styles.userInfoRow}>
             <p><strong>Nom :</strong> {userData.name}</p>
             <p><strong>Email :</strong> {userData.email}</p>
           </div>
-
           <div className={styles.userActions}>
             <Button variant="outline">Modifier le mot de passe</Button>
             <button className={styles.deleteAccountBtn}>Supprimer mon compte</button>
           </div>
         </div>
-        {isAddModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Ajouter un compagnon</h3>
-            <PetForm
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={handleAddPet}
-            />
-            <button 
-              onClick={() => setIsAddModalOpen(false)}
-              style={{ 
-                marginTop: "15px", 
-                background: "none", 
-                border: "none", 
-                color: "#94a3b8", 
-                cursor: "pointer",
-                textDecoration: "underline" 
-              }}
-            >
-              Annuler
-            </button>
-          </div>
-        </div>
-      )}
 
         <hr className={styles.divider} />
 
+        {/* SECTION ANIMAUX */}
         <div className={styles.petsSection}>
           <h2 className={styles.sectionHeading}>DÉTAILS DE MES ANIMAUX</h2>
           
@@ -63,8 +53,12 @@ export default function Profile() {
           ) : myPets.length > 0 ? (
             <div className={styles.petsList}>
               {myPets.map(pet => (
-                <div key={pet.id} className={styles.petDetailCard}>
-                  
+                <div 
+                  key={pet.id} 
+                  className={styles.petDetailCard}
+                  onClick={() => navigate(`/pet/${pet.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className={styles.petImageWrapper}>
                     <img src={pet.imageUrl || "/default-pet.png"} alt={pet.name} />
                   </div>
@@ -83,20 +77,21 @@ export default function Profile() {
                     )}
                     
                     <p className={styles.petFriendsCount}>
-                      12 Amis
+                      {pet.friendsCount || 0} Ami(s)
                     </p>
                     
                     <div className={styles.petActions}>
-                      <button className={styles.editBtn}>Modifier les infos</button>
                       <button 
                         className={styles.deleteBtn}
-                        onClick={() => handleDeletePet(pet.id)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Empêche la navigation vers le profil
+                          handleDeletePet(pet.id);
+                        }}
                       >
                         Supprimer
                       </button>
                     </div>
                   </div>
-                  
                 </div>
               ))}
             </div>
@@ -104,8 +99,27 @@ export default function Profile() {
             <p className={styles.loadingText}>Vous n'avez pas encore enregistré d'animaux.</p>
           )}
         </div>
-
       </div>
+
+      {/* MODALE D'AJOUT */}
+      {isAddModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Ajouter un compagnon</h3>
+            <PetForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleAddPet}
+            />
+            <button 
+              onClick={() => setIsAddModalOpen(false)}
+              className={styles.cancelLink}
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 }

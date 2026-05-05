@@ -60,10 +60,28 @@
 
 .petDetailCard {
   background-color: #1e293b;
-  border: 1px solid #334155;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
   display: flex;
   overflow: hidden;
   padding: 15px;
+}
+
+.petDetailCard:hover {
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+.cancelLink {
+  display: block;
+  margin: 15px auto 0;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
 }
 
 .petImageWrapper {
