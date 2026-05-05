@@ -17,7 +17,6 @@ export function usePetProfile(petId) {
   const fetchPetData = async () => {
     try {
       setLoading(true);
-      // On retire "/api" car Axios l'ajoute déjà tout seul
       const myPetsRes = await api.get("/pets");
       const myOwnPets = Array.isArray(myPetsRes.data) ? myPetsRes.data : [];
       setMyPets(myOwnPets);
@@ -52,7 +51,6 @@ export function usePetProfile(petId) {
       };
 
       await api.put(`/pets/${petId}`, payload);
-
       setIsEditingBio(false);
       fetchPetData();
     } catch (error) {
@@ -73,6 +71,7 @@ export function usePetProfile(petId) {
     }
   };
 
+  // Retourne toutes les fonctions et etats pour le composant
   return {
     pet,
     friends,
@@ -85,5 +84,6 @@ export function usePetProfile(petId) {
     setTempBio,
     updatePetBio,
     handleImageUpload,
+    fetchPetData, // <--- C'ETAIT CETTE LIGNE MANQUANTE
   };
 }
