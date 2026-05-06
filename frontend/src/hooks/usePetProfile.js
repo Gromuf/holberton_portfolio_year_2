@@ -84,6 +84,6 @@ export function usePetProfile(petId) {
     setTempBio,
     updatePetBio,
     handleImageUpload,
-    fetchPetData, // <--- C'ETAIT CETTE LIGNE MANQUANTE
+    fetchPetData,
   };
 }

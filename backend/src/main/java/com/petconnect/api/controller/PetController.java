@@ -84,8 +84,7 @@ public class PetController {
 		existingPet.setSpecies(petDetails.getSpecies());
 		existingPet.setAge(petDetails.getAge());
 		existingPet.setBio(petDetails.getBio());
-		existingPet.setWalking(petDetails.isWalking());
-
+		existingPet.setIsWalking(petDetails.getIsWalking());
 		return petRepository.save(existingPet);
 	}
 

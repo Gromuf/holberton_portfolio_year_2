@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import PetProfile from "./pages/PetProfile";
+import Messages from "./pages/Messages";
 
 // Import des Composants de structure
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
@@ -59,6 +60,16 @@ function App() {
           element={
             <ProtectedRoute>
               <PetProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 7. Messagerie (Privé) */}
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <Messages />
             </ProtectedRoute>
           }
         />

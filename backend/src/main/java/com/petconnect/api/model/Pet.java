@@ -39,8 +39,8 @@ public class Pet {
 	@NotBlank(message = "Species is required")
 	private String species;
 
-	@Column(nullable = false)
-	private boolean isWalking = false; // par defaut le pet n'est pas en balade
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
 
 	@Column(name = "age")
 	private Integer age; // Integer permet d'avoir la valeur "null" si non renseignée au début
