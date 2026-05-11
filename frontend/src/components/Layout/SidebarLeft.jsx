@@ -1,8 +1,10 @@
+import React from "react";
 import Button from "../Common/Button";
+import NotifMsg from "../Common/NotifMsg";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./SidebarLeft.module.css";
 
-export default function SidebarLeft({ onAddPetClick }) {
+export default function SidebarLeft({ onAddPetClick, hasUnread }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,7 +14,14 @@ export default function SidebarLeft({ onAddPetClick }) {
     <aside className={styles.sidebar}>
       <nav className={styles.navGroup}>
         <Button variant="ghost" onClick={() => navigate("/home")} className={styles.navBtn}>🏠 Accueil</Button>
-        <Button variant="ghost" onClick={() => navigate("/messages")} className={styles.navBtn}>📩 Messages</Button>
+        
+        <Button variant="ghost" onClick={() => navigate("/messages")} className={styles.navBtn}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <span>📩 Messages</span>
+            {hasUnread && <NotifMsg />}
+          </div>
+        </Button>
+
         <Button variant="ghost" onClick={() => navigate("/profile")} className={styles.navBtn}>👤 Profil</Button>
       </nav>
       {showAddPetButton && (

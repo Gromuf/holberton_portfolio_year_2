@@ -1,12 +1,20 @@
 package com.petconnect.api.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
@@ -26,6 +34,9 @@ public class Message {
 	@Column(name = "sent_at", nullable = false)
 	private LocalDateTime sentAt = LocalDateTime.now();
 
+	@Column(nullable = false)
+    private Boolean isRead = false;
+	
 	@ManyToOne
 	@JoinColumn(name = "sender_pet_id", nullable = false)
 	@NotNull(message = "Sender pet is required")

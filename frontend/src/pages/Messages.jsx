@@ -4,7 +4,7 @@ import { useMessages } from "../hooks/useMessages";
 import Button from "../components/Common/Button";
 import styles from "./Messages.module.css";
 
-export default function Messages() {
+export default function Messages({logout, onAddPetClick, onAcceptRequest, onRejectRequest, ...socialProps}) {
   const {
     myPets, activePet, setActivePet,
     contacts, selectedContact, setSelectedContact,
@@ -21,7 +21,13 @@ export default function Messages() {
   }, [messages]);
 
   return (
-    <MainLayout hideRightSidebar={true}>
+    <MainLayout hideRightSidebar={true}
+      logout={logout}
+      onAddPetClick={onAddPetClick}
+      onAcceptRequest={onAcceptRequest}
+      onRejectRequest={onRejectRequest}
+      {...socialProps}
+    >
       <div className={styles.messagingContainer}>
         
         {/* COLONNE GAUCHE : SÉLECTEUR ET CONTACTS */}

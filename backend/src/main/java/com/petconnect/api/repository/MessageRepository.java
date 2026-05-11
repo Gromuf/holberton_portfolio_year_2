@@ -1,10 +1,14 @@
 package com.petconnect.api.repository;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 import com.petconnect.api.model.Message;
 import com.petconnect.api.model.Pet;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -22,4 +26,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * repository.findBy...(rex, koziz, koziz, rex);
      */
 	List<Message> findBySenderPetAndReceiverPetOrSenderPetAndReceiverPetOrderBySentAtAsc(Pet sender1, Pet receiver1, Pet sender2, Pet receiver2);
+
+	// Marque tous les messages reçus par un pet comme lus
+	@Query(value = "SELECT EXISTS(SELECT 1 FROM messages WHERE receiver_pet_id IN :petIds AND is_read = false)", nativeQuery = true)
+	boolean hasUnreadMessages(@Param("petIds") List<Long> petIds);
+
+	// Optionnel : Récupérer les messages non lus entre deux pets
+	List<Message> findBySenderPetIdAndReceiverPetIdAndIsReadFalse(Long senderId, Long receiverId);
 }

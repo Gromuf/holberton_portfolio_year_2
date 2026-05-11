@@ -13,6 +13,15 @@ import Messages from "./pages/Messages";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
 
 function App() {
+  
+  // Fonction de déconnexion globale
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    // On redirige vers la landing ou login et on recharge pour vider les états React
+    window.location.href = "/";
+  };
+
   return (
     <Router>
       <Routes>
@@ -25,7 +34,7 @@ function App() {
         {/* 3. Connexion (Public) */}
         <Route path="/login" element={<Login />} />
 
-        {/* 4. Tableau de bord (Privé - nécessite un Token) */}
+        {/* 4. Tableau de bord (Privé) */}
         <Route
           path="/home"
           element={
@@ -35,12 +44,13 @@ function App() {
           }
         />
 
-        {/* 5. Profil (Privé - nécessite un Token) */}
+        {/* 5. Profil (Privé) */}
         <Route
           path="/profile"
           element={
             <ProtectedRoute>
-              <Profile />
+              {/* On passe le logout au profil pour que le bouton Header fonctionne */}
+              <Profile logout={handleLogout} />
             </ProtectedRoute>
           }
         />
@@ -49,17 +59,17 @@ function App() {
           path="/profile/:userId"
           element={
             <ProtectedRoute>
-              <Profile />
+              <Profile logout={handleLogout} />
             </ProtectedRoute>
           }
         />
 
-        {/* 6. Profil de l'animal (Privé - nécessite un Token) */}
+        {/* 6. Profil de l'animal (Privé) */}
         <Route
           path="/pet/:id"
           element={
             <ProtectedRoute>
-              <PetProfile />
+              <PetProfile logout={handleLogout} />
             </ProtectedRoute>
           }
         />
@@ -69,7 +79,7 @@ function App() {
           path="/messages"
           element={
             <ProtectedRoute>
-              <Messages />
+              <Messages logout={handleLogout} />
             </ProtectedRoute>
           }
         />

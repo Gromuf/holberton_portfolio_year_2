@@ -47,6 +47,8 @@ export function useMessages() {
             params: { pet1Id: activePet.id, pet2Id: selectedContact.id },
           });
           setMessages(res.data);
+          // Dès qu'on charge l'historique, on marque comme lu
+          markAsRead(selectedContact.id);
         } catch (err) {
           console.error("Erreur historique", err);
         }
@@ -55,21 +57,34 @@ export function useMessages() {
     }
   }, [activePet, selectedContact]);
 
+  const markAsRead = async (senderId) => {
+    if (!activePet || !senderId) return;
+    try {
+      await api.put(
+        `/messages/read?senderId=${senderId}&receiverId=${activePet.id}`,
+      );
+
+      // On prévient le MainLayout qu'il doit revérifier les notifs
+      window.dispatchEvent(new Event("messagesMarkedAsRead"));
+    } catch (err) {
+      console.error("Erreur marquage lecture", err);
+    }
+  };
+
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !activePet || !selectedContact) return;
 
     try {
-      // On s'assure d'envoyer uniquement les IDs strictement nécessaires
       const messageData = {
         content: newMessage,
         senderPet: { id: parseInt(activePet.id) },
         receiverPet: { id: parseInt(selectedContact.id) },
         sentAt: new Date().toISOString(),
+        isRead: false,
       };
 
       const res = await api.post("/messages/send", messageData);
-
       setMessages((prev) => [...prev, res.data]);
       setNewMessage("");
     } catch (err) {
