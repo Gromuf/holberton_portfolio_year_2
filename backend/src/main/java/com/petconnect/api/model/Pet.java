@@ -1,5 +1,6 @@
 package com.petconnect.api.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,6 +42,8 @@ public class Pet {
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
+
+	private LocalDateTime walkStartedAt;
 
 	@Column(name = "age")
 	private Integer age; // Integer permet d'avoir la valeur "null" si non renseignée au début
