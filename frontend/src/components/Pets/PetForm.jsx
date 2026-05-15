@@ -1,5 +1,5 @@
 import Button from "../Common/Button";
-import "./PetForm.css";
+import styles from "./PetForm.module.css";
 
 export default function PetForm({ formData, setFormData, onSubmit }) {
   const handleChange = (e) => {
@@ -11,8 +11,8 @@ export default function PetForm({ formData, setFormData, onSubmit }) {
   };
 
   return (
-    <form className="pet-add-form" onSubmit={onSubmit}>
-      <div className="input-group">
+    <form className={styles.petAddForm} onSubmit={onSubmit}>
+      <div className={styles.inputGroup}>
         <label>Nom du compagnon *</label>
         <input
           required
@@ -24,15 +24,14 @@ export default function PetForm({ formData, setFormData, onSubmit }) {
         />
       </div>
 
-      <div className="form-row">
-        <div className="input-group flex-1">
+      <div className={styles.formRow}>
+        <div className={`${styles.inputGroup} ${styles.flex1}`}>
           <label>Espèce *</label>
           <select
             required
             name="species"
             value={formData.species || ""}
             onChange={handleChange}
-            className="species-select"
           >
             <option value="" disabled>
               Choisir une espèce
@@ -42,7 +41,7 @@ export default function PetForm({ formData, setFormData, onSubmit }) {
             <option value="AUTRE">Autre</option>
           </select>
         </div>
-        <div className="input-group flex-1">
+        <div className={`${styles.inputGroup} ${styles.flex1}`}>
           <label>Âge (ans)</label>
           <input
             type="number"
@@ -55,7 +54,7 @@ export default function PetForm({ formData, setFormData, onSubmit }) {
         </div>
       </div>
 
-      <div className="input-group">
+      <div className={styles.inputGroup}>
         <label>Petite Bio</label>
         <textarea
           name="bio"
@@ -66,7 +65,7 @@ export default function PetForm({ formData, setFormData, onSubmit }) {
         />
       </div>
 
-      <Button type="submit" variant="success" className="submit-btn-full">
+      <Button type="submit" variant="success" className={styles.submitBtnFull}>
         Créer le profil
       </Button>
     </form>

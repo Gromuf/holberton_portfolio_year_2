@@ -1,0 +1,112 @@
+/* Container principal transformé en CARTE */
+.petAddForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0; /* On remplace 'auto' par '0' pour aligner la carte à gauche */
+  text-align: left;
+  width: 100%; /* La carte s'alignera parfaitement avec le titre et le bouton Annuler */
+
+  /* --- STYLES DE LA CARTE --- */
+  background-color: #0f172a;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.inputGroup label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style commun pour les champs à l'intérieur de la carte */
+.inputGroup input,
+.inputGroup textarea,
+.inputGroup select {
+  /* Fond plus sombre pour contraster AVEC LA CARTE */
+  background: #020617;
+  border: 1px solid #334155;
+  color: #f1f5f9;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  appearance: none;
+}
+
+/* Specificités select */
+.inputGroup select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  padding-right: 35px;
+}
+
+/* État focus cohérent */
+.inputGroup input:focus,
+.inputGroup textarea:focus,
+.inputGroup select:focus {
+  outline: none;
+  border-color: #3d5afe;
+  box-shadow: 0 0 0 2px rgba(61, 90, 254, 0.1);
+}
+
+.inputGroup input::placeholder,
+.inputGroup textarea::placeholder {
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.inputGroup select option {
+  background: #020617; /* Cohérent avec le fond du select */
+  color: #f1f5f9;
+}
+
+/* Bouton aligné sur la nouvelle taille de formulaire */
+.submitBtnFull {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .petAddForm {
+    padding: 20px 15px; /* On réduit le padding interne pour laisser plus de place aux inputs */
+    margin: 10px 0; /* On réduit un peu la marge externe */
+  }
+
+  .formRow {
+    flex-direction: column; /* On empile "Espèce" et "Âge" verticalement */
+    gap: 12px; /* Garde le même espace mais en hauteur */
+  }
+}

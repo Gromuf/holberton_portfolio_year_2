@@ -1,16 +1,18 @@
-import "./PetCard.css";
+import styles from "./PetCard.module.css";
 
 export default function PetCard({ pet, onOpen }) {
   const imageUrl = pet.imageUrl || "/default-pet.png";
 
   return (
-    <div className="pet-mini-card" onClick={() => onOpen(pet)}>
-      <div className="card-img-wrapper">
+    <div className={styles.petMiniCard} onClick={() => onOpen(pet)}>
+      <div className={styles.cardImgWrapper}>
         <img src={imageUrl} alt={pet.name} />
       </div>
-      <div className="card-overlay">
+      <div className={styles.cardOverlay}>
         <h4>{pet.name}</h4>
-        {pet.isWalking && <span className="walking-dot" title="En balade"></span>}
+        {pet.isWalking && (
+          <span className={styles.walkingDot} title="En balade"></span>
+        )}
       </div>
     </div>
   );
