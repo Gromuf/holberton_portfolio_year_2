@@ -5,7 +5,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 # On package l'application en ignorant les tests pour gagner du temps au build
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
 # Étape 2 : Exécution avec Java
 FROM eclipse-temurin:21-jre

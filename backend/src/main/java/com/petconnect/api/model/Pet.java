@@ -20,6 +20,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Entity
 @Table(name = "pets")
@@ -36,9 +38,9 @@ public class Pet {
 	@NotBlank(message = "Name is required")
 	private String name;
 
-	@Column(nullable = false, length = 30)
-	@NotBlank(message = "Species is required")
-	private String species;
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PetSpecies species;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
