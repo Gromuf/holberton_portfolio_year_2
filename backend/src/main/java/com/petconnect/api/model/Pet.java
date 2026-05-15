@@ -42,11 +42,6 @@ public class Pet {
 	@Enumerated(EnumType.STRING)
 	private PetSpecies species;
 
-	@Column(nullable = false, columnDefinition = "boolean default false")
-	private Boolean isWalking = false; // par defaut le pet n'est pas en balade
-
-	private LocalDateTime walkStartedAt;
-
 	@Column(name = "age")
 	private Integer age; // Integer permet d'avoir la valeur "null" si non renseignée au début
 

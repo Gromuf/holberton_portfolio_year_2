@@ -1,10 +1,8 @@
 package com.petconnect.api.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,31 +64,12 @@ public class PetService {
 
 	// --- LOGIQUE DE BALADE (WALK) ---
 
-	public void startWalk(Long petId) {
-		Pet pet = petRepository.findById(petId).orElseThrow();
-		pet.setIsWalking(true);
-		pet.setWalkStartedAt(LocalDateTime.now());
-		petRepository.save(pet);
-	}
-
-	public void stopWalk(Long petId) {
-		Pet pet = petRepository.findById(petId).orElseThrow();
-		pet.setIsWalking(false);
-		pet.setWalkStartedAt(null);
-		petRepository.save(pet);
-	}
-
 	/**
-	 * Récupère les amis qui sont actuellement en balade,
-	 * en filtrant ceux que l'utilisateur a décidé de "muter".
+	 * TEMPORAIRE : Retourne une liste vide en attendant la nouvelle table Walks.
+	 * (Remplace l'ancienne logique basée sur isWalking)
 	 */
 	public List<Pet> getFriendsInWalk(Long myPetId) {
-		List<Pet> friends = getFriends(myPetId); 
-		
-		return friends.stream()
-			.filter(f -> f.getIsWalking() != null && f.getIsWalking())
-			.filter(f -> !walkMuteRepository.existsByMuterIdAndMutedId(myPetId, f.getId()))
-			.toList();
+		return List.of(); 
 	}
 
 	/**
@@ -115,23 +94,5 @@ public class PetService {
 		mute.setMuter(petRepository.getReferenceById(myPetId));
 		mute.setMuted(petRepository.getReferenceById(friendId));
 		walkMuteRepository.save(mute);
-	}
-
-	/**
-	 * Arrêt automatique des balades après 30 minutes.
-	 * S'exécute toutes les minutes.
-	 */
-	@Scheduled(fixedRate = 60000)
-	public void autoEndWalks() {
-		List<Pet> walkers = petRepository.findByIsWalkingTrue();
-		LocalDateTime now = LocalDateTime.now();
-
-		walkers.stream()
-			.filter(p -> p.getWalkStartedAt() != null && p.getWalkStartedAt().isBefore(now.minusMinutes(30)))
-			.forEach(p -> {
-				p.setIsWalking(false);
-				p.setWalkStartedAt(null);
-				petRepository.save(p);
-			});
 	}
 }
