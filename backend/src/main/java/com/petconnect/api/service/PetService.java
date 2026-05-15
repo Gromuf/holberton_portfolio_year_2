@@ -9,11 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.petconnect.api.model.Friendship;
 import com.petconnect.api.model.Pet;
 import com.petconnect.api.model.User;
-import com.petconnect.api.model.WalkMute;
 import com.petconnect.api.repository.FriendshipRepository;
 import com.petconnect.api.repository.PetRepository;
 import com.petconnect.api.repository.UserRepository;
-import com.petconnect.api.repository.WalkMuteRepository;
 
 @Service
 public class PetService {
@@ -26,9 +24,6 @@ public class PetService {
 
 	@Autowired
 	private FriendshipRepository friendshipRepository;
-
-	@Autowired
-	private WalkMuteRepository walkMuteRepository;
 
 	public List<Pet> findAllPets() {
 		return petRepository.findAll();
@@ -75,7 +70,7 @@ public class PetService {
 	/**
 	 * Logique interne pour récupérer la liste des objets Pet amis
 	 */
-	private List<Pet> getFriends(Long petId) {
+	public List<Pet> getFriends(Long petId) {
 		Pet pet = petRepository.findById(petId)
 				.orElseThrow(() -> new RuntimeException("Pet not found"));
 		
@@ -87,12 +82,5 @@ public class PetService {
 		return friendships.stream()
 				.map(f -> f.getPet1().getId().equals(petId) ? f.getPet2() : f.getPet1())
 				.toList();
-	}
-
-	public void muteFriendForWalks(Long myPetId, Long friendId) {
-		WalkMute mute = new WalkMute();
-		mute.setMuter(petRepository.getReferenceById(myPetId));
-		mute.setMuted(petRepository.getReferenceById(friendId));
-		walkMuteRepository.save(mute);
 	}
 }

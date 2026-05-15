@@ -111,4 +111,9 @@ public class PetController {
 		}
 		petRepository.delete(pet);
 	}
+
+	@GetMapping("/{id}/friends")
+	public List<Pet> getPetFriends(@PathVariable Long id) {
+		return petService.getFriends(id);
+	}
 }

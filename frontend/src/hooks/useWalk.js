@@ -1,90 +1,68 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../api/client";
 
-export function useWalk(activePet) {
-  const [isWalking, setIsWalking] = useState(activePet?.isWalking || false);
-  const [friendInWalk, setFriendInWalk] = useState(null);
+export function useWalk(activePetId = null) {
+  const [activeWalk, setActiveWalk] = useState(null);
+  const [invitations, setInvitations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // On initialise l'état avec ce qui est stocké dans le navigateur (si présent)
-  const [dismissedFriendId, setDismissedFriendId] = useState(() => {
-    const saved = sessionStorage.getItem("dismissedWalkNotif");
-    return saved ? Number(saved) : null;
-  });
-
-  useEffect(() => {
-    if (activePet) {
-      setIsWalking(activePet.isWalking);
-    }
-  }, [activePet]);
-
-  const checkFriends = useCallback(async () => {
-    if (!activePet) return;
-
+  const fetchWalkData = useCallback(async () => {
+    if (!activePetId) return;
     try {
-      const res = await api.get(`/walks/check-friends/${activePet.id}`);
-
-      if (res.data && res.data.length > 0) {
-        const foundFriend = res.data[0];
-
-        // On n'affiche la notif que si l'ID n'est pas celui stocké en session
-        if (foundFriend.id !== dismissedFriendId) {
-          setFriendInWalk(foundFriend);
-        } else {
-          setFriendInWalk(null);
-        }
-      } else {
-        setFriendInWalk(null);
-        // Si plus personne n'est dehors, on nettoie pour permettre une future notif
-        if (dismissedFriendId) {
-          setDismissedFriendId(null);
-          sessionStorage.removeItem("dismissedWalkNotif");
-        }
-      }
+      const [walkRes, invitsRes] = await Promise.all([
+        api.get(`/walks/pet/${activePetId}/active`),
+        api.get(`/walks/pet/${activePetId}/invitations`),
+      ]);
+      setActiveWalk(walkRes.status === 204 ? null : walkRes.data);
+      setInvitations(invitsRes.data);
     } catch (err) {
-      console.error("Erreur check balade amis", err);
+      console.error("Erreur chargement balades", err);
     }
-  }, [activePet, dismissedFriendId]);
+  }, [activePetId]);
 
   useEffect(() => {
-    checkFriends();
-    const interval = setInterval(checkFriends, 5000);
+    fetchWalkData();
+    const interval = setInterval(fetchWalkData, 5000);
     return () => clearInterval(interval);
-  }, [checkFriends]);
+  }, [fetchWalkData]);
 
-  const toggleWalk = async (petId, status) => {
+  const createWalk = async (organizerId, invitedIds, description) => {
     try {
-      await api.post(`/walks/${petId}/${status ? "start" : "stop"}`);
-      if (activePet && petId === activePet.id) {
-        setIsWalking(status);
-      }
+      await api.post("/walks/create", invitedIds, {
+        params: { organizerId, description },
+      });
+      await fetchWalkData();
     } catch (err) {
-      console.error("Erreur action balade", err);
+      console.error("Erreur création balade", err);
     }
   };
 
-  const muteFriend = async (friendId) => {
-    if (!activePet) return;
+  const respondToInvitation = async (invitationId, status) => {
     try {
-      await api.post(`/walks/${activePet.id}/mute/${friendId}`);
-      dismissNotification(friendId);
+      await api.put(`/walks/invitations/${invitationId}`, null, {
+        params: { status },
+      });
+      await fetchWalkData();
     } catch (err) {
-      console.error("Erreur mute ami", err);
+      console.error("Erreur réponse invitation", err);
     }
   };
 
-  // On sauvegarde l'ID dans le sessionStorage pour qu'il survive au changement de page
-  const dismissNotification = (friendId) => {
-    const numericId = Number(friendId);
-    setDismissedFriendId(numericId);
-    setFriendInWalk(null);
-    sessionStorage.setItem("dismissedWalkNotif", numericId);
+  const endWalk = async (walkId) => {
+    try {
+      await api.put(`/walks/${walkId}/end`);
+      await fetchWalkData();
+    } catch (err) {
+      console.error("Erreur fin balade", err);
+    }
   };
 
   return {
-    isWalking,
-    friendInWalk,
-    toggleWalk,
-    muteFriend,
-    dismissNotification,
+    activeWalk,
+    invitations,
+    loading,
+    createWalk,
+    respondToInvitation,
+    endWalk,
   };
 }

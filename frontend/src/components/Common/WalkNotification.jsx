@@ -1,23 +1,46 @@
-import React from 'react';
-import styles from './WalkNotification.module.css';
+import React from "react";
+import styles from "./WalkNotification.module.css";
 
-const WalkNotification = ({ friend, onReply, onMute, onClose }) => {
+const WalkNotification = ({ invitation, onAccept, onDecline }) => {
+  // SÉCURITÉ : On bloque le rendu si les données ne sont pas encore prêtes
+  if (!invitation || !invitation.walk || !invitation.walk.organizer)
+    return null;
+
+  const organizer = invitation.walk.organizer;
+
   return (
     <div className={styles.notifBanner}>
       <div className={styles.content}>
         <div className={styles.avatarWrapper}>
-          <img src={friend.imageUrl || "/default-pet.png"} alt={friend.name} className={styles.avatar} />
+          <img
+            src={organizer.imageUrl || "/default-pet.png"}
+            alt={organizer.name}
+            className={styles.avatar}
+          />
           <span className={styles.badge}>🦮</span>
         </div>
         <div className={styles.text}>
-          <p><strong>{friend.name}</strong> est parti en balade !</p>
-          <span>Vas vite le rejoindre au parc.</span>
+          <p>Nouvelle balade !</p>
+          <span>
+            <strong>{organizer.name}</strong> vous invite.
+          </span>
         </div>
       </div>
+
+      {/* Affichage de la description (Lieu/Heure) si elle existe */}
+      {invitation.walk.description && (
+        <div className={styles.description}>
+          "{invitation.walk.description}"
+        </div>
+      )}
+
       <div className={styles.actions}>
-        <button className={styles.btnReply} onClick={onReply}>J'arrive !</button>
-        <button className={styles.btnMute} onClick={() => onMute(friend.id)}>Ne plus m'avertir</button>
-        <button className={styles.btnClose} onClick={onClose}>Plus tard</button>
+        <button className={styles.btnAccept} onClick={onAccept}>
+          Accepter
+        </button>
+        <button className={styles.btnDecline} onClick={onDecline}>
+          Refuser
+        </button>
       </div>
     </div>
   );
