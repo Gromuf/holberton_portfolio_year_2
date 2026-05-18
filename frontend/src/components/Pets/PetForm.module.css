@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin: 20px 0; /* On remplace 'auto' par '0' pour aligner la carte à gauche */
+  margin: 20px 0;
   text-align: left;
   width: 100%; /* La carte s'alignera parfaitement avec le titre et le bouton Annuler */
 

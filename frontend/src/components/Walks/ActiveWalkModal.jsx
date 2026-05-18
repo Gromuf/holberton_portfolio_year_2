@@ -9,7 +9,7 @@ export default function ActiveWalkModal({ activeWalk, activePet, messages = [], 
   const [typedMessage, setTypedMessage] = useState("");
   const chatEndRef = useRef(null);
 
-  // Charger la liste des chiens présents
+  // Charger la liste des animaux présents
   useEffect(() => {
     if (!activeWalk) return;
     api.get(`/walks/${activeWalk.id}/participants`)
@@ -36,7 +36,6 @@ export default function ActiveWalkModal({ activeWalk, activePet, messages = [], 
 
   return createPortal(
     <div className={styles.modalOverlay} onClick={onClose}>
-      {/* On élargit un peu la modale pour qu'il y ait la place pour le chat */}
       <div className={`${styles.modalContent} ${styles.largeModal}`} onClick={e => e.stopPropagation()}>
         <h3 className={styles.title}>📍 Balade de {activeWalk.organizer.name}</h3>
         

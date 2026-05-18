@@ -14,7 +14,7 @@ export default function NotificationItem({ request, onAccept, onReject }) {
         {/* L'animal qui envoie la demande */}
         <strong>{request.pet1.name}</strong>
         <span className={styles.notifSubText}>veut être ami avec</span>
-        {/* Ton animal qui reçoit la demande */}
+        {/* animal qui reçoit la demande */}
         <strong>{request.pet2.name}</strong>
       </div>
       

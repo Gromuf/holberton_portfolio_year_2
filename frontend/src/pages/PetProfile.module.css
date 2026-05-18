@@ -6,7 +6,7 @@
   max-width: 900px;
   margin: 0 auto;
   border: 1px solid #334155;
-  min-height: fit-content; /* S'adapte au contenu */
+  min-height: fit-content;
 }
 
 .headerSection {

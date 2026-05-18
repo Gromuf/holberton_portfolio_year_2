@@ -23,7 +23,6 @@ public class Walk {
     @JoinColumn(name = "organizer_id", nullable = false)
     private Pet organizer;
 
-    // NOUVEAU CHAMP : Description ou lieu de rendez-vous
     @Column(length = 500)
     private String description;
 

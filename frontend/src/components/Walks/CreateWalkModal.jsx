@@ -82,15 +82,15 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                     key={friend.id} 
                     className={styles.friendOption}
                     style={{ 
-                      opacity: friend.isWalking ? 0.5 : 1, // 👈 CORRECTION : isWalking
-                      cursor: friend.isWalking ? "not-allowed" : "pointer" // 👈 CORRECTION : isWalking
+                      opacity: friend.isWalking ? 0.5 : 1,
+                      cursor: friend.isWalking ? "not-allowed" : "pointer"
                     }}
                   >
                     <input 
                       type="checkbox" 
                       checked={selectedFriends.includes(friend.id)}
                       onChange={() => toggleFriend(friend.id)}
-                      disabled={friend.isWalking} // 👈 CORRECTION : isWalking
+                      disabled={friend.isWalking}
                     />
                     <img 
                       src={friend.imageUrl || "/default-pet.png"} 
@@ -99,7 +99,7 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                     />
                     <span>{friend.name}</span>
                     
-                    {friend.isWalking && ( // 👈 CORRECTION : isWalking
+                    {friend.isWalking && (
                       <span style={{ marginLeft: "auto", fontSize: "12px", color: "#ef4444", fontWeight: "bold" }}>
                         Déjà en balade 🐾
                       </span>

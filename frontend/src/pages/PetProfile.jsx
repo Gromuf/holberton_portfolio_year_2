@@ -10,7 +10,6 @@ export default function PetProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // AJOUT de fetchPetData ici pour qu'il soit reconnu plus bas
   const { 
     pet, friends, loading, isOwner, myPets, handleImageUpload, 
     isEditingBio, setIsEditingBio, tempBio, setTempBio, updatePetBio, fetchPetData 
@@ -39,7 +38,6 @@ export default function PetProfile() {
     if (window.confirm(`Voulez-vous vraiment supprimer l'amitié avec ${friend.name} ?`)) {
       try {
         await api.delete(`/friendships/${friend.friendshipId}`);
-        // Maintenant cette fonction est bien définie[cite: 6]
         fetchPetData(); 
       } catch (error) {
         console.error("Erreur suppression amitié:", error);

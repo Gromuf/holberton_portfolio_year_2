@@ -12,7 +12,6 @@
   padding: 80px 20px 20px;
 }
 
-/* --- NOUVELLE CLASSE POUR ADAPTER LA GRILLE --- */
 .noRightSidebar {
   grid-template-columns: 250px 1fr;
 }

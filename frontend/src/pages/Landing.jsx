@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Button from "../components/Common/Button"; // Vérifie bien le chemin
+import Button from "../components/Common/Button";
 import styles from "./auth.module.css";
 
 export default function Landing() {

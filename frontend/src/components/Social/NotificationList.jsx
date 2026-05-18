@@ -1,5 +1,5 @@
 import React from 'react';
-import NotificationItem from './NotificationItem'; // Import du nouveau fichier
+import NotificationItem from './NotificationItem';
 import styles from './Notification.module.css';
 
 export default function NotificationList({ requests, onAccept, onReject }) {

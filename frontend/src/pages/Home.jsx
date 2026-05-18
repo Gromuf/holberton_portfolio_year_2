@@ -46,7 +46,6 @@ export default function Home() {
     fetchMyData,
   } = useHome(navigate);
 
-  // Harmonisation des noms pour le "câblage"
   const socialProps = {
     pets,
     mySelectedPetId,
@@ -76,7 +75,6 @@ export default function Home() {
       logout={logout}
       {...socialProps}
     >
-      {/* --- UTILISATION DE LA CLASSE petGrid DU MODULE --- */}
       <div className={styles.petGrid}>
         {pets.length > 0 ? (
           pets.map((pet) => (
@@ -84,7 +82,6 @@ export default function Home() {
               key={pet.id}
               pet={pet}
               onOpen={openProfile}
-              // onDelete et onUpload retirés car gérés ailleurs maintenant
             />
           ))
         ) : (

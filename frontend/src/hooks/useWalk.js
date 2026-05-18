@@ -19,7 +19,6 @@ export function useWalk(activePetId = null) {
       setActiveWalk(currentWalk);
       setInvitations(invitsRes.data);
 
-      // CORRECTION DU GET : On interroge l'endpoint GET /{walkId}/messages qui existe dans le contrôleur
       if (currentWalk) {
         const msgRes = await api.get(`/walks/${currentWalk.id}/messages`);
         setMessages(msgRes.data);
@@ -68,7 +67,6 @@ export function useWalk(activePetId = null) {
     }
   };
 
-  // CORRECTION DU POST : On envoie bien sur /{walkId}/chat avec le texte brut
   const sendWalkMessage = async (walkId, senderId, content) => {
     try {
       await api.post(`/walks/${walkId}/chat`, content, {

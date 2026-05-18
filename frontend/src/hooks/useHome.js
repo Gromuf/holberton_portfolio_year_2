@@ -117,7 +117,6 @@ export function useHome(navigate) {
     navigate("/");
   };
 
-  // On retourne tout ce dont le composant Home a besoin
   return {
     pets,
     searchResults,
