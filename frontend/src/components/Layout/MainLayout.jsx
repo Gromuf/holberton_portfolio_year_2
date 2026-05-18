@@ -23,7 +23,11 @@ export default function MainLayout({
     socialProps.pets?.[0];
 
   // CORRECTION : On passe l'ID de l'animal et on récupère les NOUVELLES variables
-  const { invitations, respondToInvitation } = useWalk(activePet?.id);
+  const { activeWalk, 
+    createWalk, 
+    endWalk, 
+    invitations, 
+    respondToInvitation } = useWalk(activePet?.id);
 
   const checkNotifs = async () => {
     try {
@@ -75,6 +79,10 @@ export default function MainLayout({
           {/* Plus besoin de onToggleWalk ici */}
           <SidebarLeft
             pets={socialProps.pets}
+            activePet={activePet}
+            activeWalk={activeWalk}
+            createWalk={createWalk}
+            endWalk={endWalk}
             onAddPetClick={onAddPetClick}
             hasUnread={hasUnread}
           />

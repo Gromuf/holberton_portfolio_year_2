@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
+// 1. IMPORT MAGIQUE
+import { createPortal } from "react-dom";
 import Button from "../Common/Button";
 import api from "../../api/client";
 import styles from "./Walk.module.css";
 
 export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
+  // ... (Garde exactement tout ton code d'états et tes fonctions ici) ...
   const [organizerId, setOrganizerId] = useState("");
   const [friends, setFriends] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [description, setDescription] = useState("");
   const [loadingFriends, setLoadingFriends] = useState(false);
 
-  // Dès qu'on choisit un organisateur, on va chercher SES amis en base de données
   useEffect(() => {
     if (!organizerId) {
       setFriends([]);
@@ -18,83 +20,75 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
       return;
     }
     setLoadingFriends(true);
-    api
-      .get(`/pets/${organizerId}/friends`)
-      .then((res) => setFriends(res.data))
-      .catch((err) => console.error("Erreur amis", err))
+    api.get(`/pets/${organizerId}/friends`)
+      .then(res => setFriends(res.data))
+      .catch(err => console.error("Erreur amis", err))
       .finally(() => setLoadingFriends(false));
   }, [organizerId]);
 
   const toggleFriend = (id) => {
-    setSelectedFriends((prev) =>
-      prev.includes(id) ? prev.filter((fId) => fId !== id) : [...prev, id],
+    setSelectedFriends(prev => 
+      prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]
     );
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // On appelle la fonction createWalk du Hook
     onSubmit(organizerId, selectedFriends, description);
     onClose();
   };
 
-  return (
+  // 2. TÉLÉPORTATION DU RENDU DANS LE BODY
+  return createPortal(
     <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        {/* ... Garde tout le reste de ton code HTML de la modale intact ... */}
         <h3 className={styles.title}>Organiser une balade</h3>
 
         <form onSubmit={handleSubmit} className={styles.walkForm}>
-          {/* 1. Sélection de l'organisateur */}
+          
           <div className={styles.inputGroup}>
             <label>Qui organise la balade ? *</label>
-            <select
+            <select 
               required
-              value={organizerId}
+              value={organizerId} 
               onChange={(e) => setOrganizerId(e.target.value)}
             >
-              <option value="" disabled>
-                Choisir un de vos animaux
-              </option>
-              {myPets.map((pet) => (
-                <option key={pet.id} value={pet.id}>
-                  {pet.name}
-                </option>
+              <option value="" disabled>Choisir un de vos animaux</option>
+              {myPets.map(pet => (
+                <option key={pet.id} value={pet.id}>{pet.name}</option>
               ))}
             </select>
           </div>
 
-          {/* 2. Description (Lieu / Heure) */}
           <div className={styles.inputGroup}>
             <label>Où et quand ? (Optionnel)</label>
-            <input
-              type="text"
+            <input 
+              type="text" 
               placeholder="Ex: Parc de la Tête d'Or à 18h"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          {/* 3. Sélection des amis */}
           <div className={styles.inputGroup}>
             <label>Inviter des amis :</label>
             {!organizerId ? (
-              <p className={styles.infoText}>
-                Choisissez un organisateur d'abord.
-              </p>
+              <p className={styles.infoText}>Choisissez un organisateur d'abord.</p>
             ) : loadingFriends ? (
               <p className={styles.infoText}>Recherche des amis...</p>
             ) : friends.length > 0 ? (
               <div className={styles.friendsList}>
-                {friends.map((friend) => (
+                {friends.map(friend => (
                   <label key={friend.id} className={styles.friendOption}>
-                    <input
-                      type="checkbox"
+                    <input 
+                      type="checkbox" 
                       checked={selectedFriends.includes(friend.id)}
                       onChange={() => toggleFriend(friend.id)}
                     />
-                    <img
-                      src={friend.imageUrl || "/default-pet.png"}
-                      alt={friend.name}
+                    <img 
+                      src={friend.imageUrl || "/default-pet.png"} 
+                      alt={friend.name} 
                       className={styles.friendAvatar}
                     />
                     <span>{friend.name}</span>
@@ -102,24 +96,17 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                 ))}
               </div>
             ) : (
-              <p className={styles.infoText}>
-                Cet animal n'a pas encore d'amis à inviter.
-              </p>
+              <p className={styles.infoText}>Cet animal n'a pas encore d'amis à inviter.</p>
             )}
           </div>
 
-          {/* 4. Actions */}
           <div className={styles.actions}>
-            <button
-              type="button"
-              className={styles.cancelBtn}
-              onClick={onClose}
-            >
+            <button type="button" className={styles.cancelBtn} onClick={onClose}>
               Annuler
             </button>
-            <Button
-              type="submit"
-              variant="success"
+            <Button 
+              type="submit" 
+              variant="success" 
               disabled={!organizerId || selectedFriends.length === 0}
             >
               Lancer la balade
@@ -127,6 +114,7 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body // <-- Cible de la téléportation
   );
 }
