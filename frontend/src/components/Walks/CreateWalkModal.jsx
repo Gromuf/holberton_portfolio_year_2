@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-// 1. IMPORT MAGIQUE
 import { createPortal } from "react-dom";
 import Button from "../Common/Button";
 import api from "../../api/client";
 import styles from "./Walk.module.css";
 
 export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
-  // ... (Garde exactement tout ton code d'états et tes fonctions ici) ...
   const [organizerId, setOrganizerId] = useState("");
   const [friends, setFriends] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState([]);
@@ -38,12 +36,10 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
     onClose();
   };
 
-  // 2. TÉLÉPORTATION DU RENDU DANS LE BODY
   return createPortal(
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        {/* ... Garde tout le reste de ton code HTML de la modale intact ... */}
-        <h3 className={styles.title}>Organiser une balade</h3>
+        <h3 className={styles.title}>🦮 Organiser une balade</h3>
 
         <form onSubmit={handleSubmit} className={styles.walkForm}>
           
@@ -56,7 +52,9 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
             >
               <option value="" disabled>Choisir un de vos animaux</option>
               {myPets.map(pet => (
-                <option key={pet.id} value={pet.id}>{pet.name}</option>
+                <option key={pet.id} value={pet.id}>
+                  {pet.name} {pet.walking ? "🐾 (Déjà en balade)" : ""}
+                </option>
               ))}
             </select>
           </div>
@@ -80,11 +78,19 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
             ) : friends.length > 0 ? (
               <div className={styles.friendsList}>
                 {friends.map(friend => (
-                  <label key={friend.id} className={styles.friendOption}>
+                  <label 
+                    key={friend.id} 
+                    className={styles.friendOption}
+                    style={{ 
+                      opacity: friend.walking ? 0.5 : 1, 
+                      cursor: friend.walking ? "not-allowed" : "pointer" 
+                    }}
+                  >
                     <input 
                       type="checkbox" 
                       checked={selectedFriends.includes(friend.id)}
                       onChange={() => toggleFriend(friend.id)}
+                      disabled={friend.walking}
                     />
                     <img 
                       src={friend.imageUrl || "/default-pet.png"} 
@@ -92,6 +98,12 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                       className={styles.friendAvatar}
                     />
                     <span>{friend.name}</span>
+                    
+                    {friend.walking && (
+                      <span style={{ marginLeft: "auto", fontSize: "12px", color: "#ef4444", fontWeight: "bold" }}>
+                        Déjà en balade 🐾
+                      </span>
+                    )}
                   </label>
                 ))}
               </div>
@@ -115,6 +127,6 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
         </form>
       </div>
     </div>,
-    document.body // <-- Cible de la téléportation
+    document.body
   );
 }

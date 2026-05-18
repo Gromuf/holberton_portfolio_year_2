@@ -47,8 +47,8 @@ public class WalkService {
     public Optional<Walk> getActiveWalk(Long petId) {
         return walkRepository.findActiveWalkByPetId(
             petId, 
-            WalkStatus.IN_PROGRESS, 
-            InvitationStatus.ACCEPTED
+            WalkStatus.IN_PROGRESS.name(),
+            InvitationStatus.ACCEPTED.name()
         );
     }
 

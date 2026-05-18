@@ -1,24 +1,25 @@
 package com.petconnect.api.repository;
 
-import com.petconnect.api.model.Walk;
-import com.petconnect.api.model.WalkStatus;
-import com.petconnect.api.model.InvitationStatus;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.petconnect.api.model.Walk;
 
 @Repository
 public interface WalkRepository extends JpaRepository<Walk, Long> {
     
-    @Query("SELECT DISTINCT w FROM Walk w LEFT JOIN w.invitations i " +
-           "WHERE w.status = :walkStatus " +
-           "AND (w.organizer.id = :petId OR (i.pet.id = :petId AND i.status = :invStatus))")
+    @Query(value = "SELECT DISTINCT w.* FROM walks w " +
+                   "LEFT JOIN walk_invitations i ON w.id = i.walk_id " +
+                   "WHERE w.status = :walkStatus " +
+                   "AND (w.organizer_id = :petId OR (i.pet_id = :petId AND i.status = :invStatus))", 
+           nativeQuery = true)
     Optional<Walk> findActiveWalkByPetId(
         @Param("petId") Long petId,
-        @Param("walkStatus") WalkStatus walkStatus,
-        @Param("invStatus") InvitationStatus invStatus
+        @Param("walkStatus") String walkStatus,
+        @Param("invStatus") String invStatus
     );
 }

@@ -4,18 +4,15 @@ import NotifMsg from "../Common/NotifMsg";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./SidebarLeft.module.css";
 
-// On importe les deux modales
 import CreateWalkModal from "../Walks/CreateWalkModal";
 import ActiveWalkModal from "../Walks/ActiveWalkModal"; 
 
-// On récupère activeWalk et endWalk depuis les props (envoyées par MainLayout)
 export default function SidebarLeft({ 
   onAddPetClick, hasUnread, pets = [], activePet, activeWalk, createWalk, endWalk 
 }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // On gère l'ouverture des deux modales
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
 
@@ -35,8 +32,6 @@ export default function SidebarLeft({
       </nav>
 
       <div className={styles.actionGroup}>
-        
-        {/* LE BOUTON DYNAMIQUE */}
         {activeWalk ? (
           <Button 
             variant="success" 
@@ -62,7 +57,6 @@ export default function SidebarLeft({
         )}
       </div>
 
-      {/* Modale de Création */}
       {isCreateModalOpen && (
         <CreateWalkModal 
           myPets={pets} 
@@ -71,7 +65,6 @@ export default function SidebarLeft({
         />
       )}
 
-      {/* Modale de Balade en cours */}
       {isActiveModalOpen && activeWalk && (
         <ActiveWalkModal 
           activeWalk={activeWalk} 

@@ -22,7 +22,6 @@ export default function MainLayout({
     socialProps.pets?.find((p) => p.id === socialProps.mySelectedPetId) ||
     socialProps.pets?.[0];
 
-  // CORRECTION : On passe l'ID de l'animal et on récupère les NOUVELLES variables
   const { activeWalk, 
     createWalk, 
     endWalk, 
@@ -48,19 +47,15 @@ export default function MainLayout({
     };
   }, []);
 
-  // On prend la première invitation en attente s'il y en a une
   const pendingInvitation = invitations?.length > 0 ? invitations[0] : null;
 
   return (
     <div className={styles.layoutWrapper}>
-      {/* NOUVEAU SYSTÈME DE NOTIFICATION D'INVITATION */}
       {pendingInvitation && activePet && (
         <WalkNotification
           invitation={pendingInvitation}
           onAccept={() => respondToInvitation(pendingInvitation.id, "ACCEPTED")}
-          onDecline={() =>
-            respondToInvitation(pendingInvitation.id, "DECLINED")
-          }
+          onDecline={() => respondToInvitation(pendingInvitation.id, "DECLINED")}
         />
       )}
 
@@ -72,11 +67,8 @@ export default function MainLayout({
         {...socialProps}
       />
 
-      <div
-        className={`${styles.gridContainer} ${hideRightSidebar ? styles.noRightSidebar : ""}`}
-      >
+      <div className={`${styles.gridContainer} ${hideRightSidebar ? styles.noRightSidebar : ""}`}>
         <aside className="sidebar">
-          {/* Plus besoin de onToggleWalk ici */}
           <SidebarLeft
             pets={socialProps.pets}
             activePet={activePet}

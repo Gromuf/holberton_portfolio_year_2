@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-// 1. IMPORT
 import { createPortal } from "react-dom";
 import api from "../../api/client";
 import styles from "./Walk.module.css";
 
 export default function ActiveWalkModal({ activeWalk, activePet, onClose, onEndWalk }) {
-  // ... (Garde tes états et tes useEffects) ...
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,40 +19,42 @@ export default function ActiveWalkModal({ activeWalk, activePet, onClose, onEndW
 
   const isOrganizer = activeWalk.organizer.id === activePet.id;
 
-  // 2. TÉLÉPORTATION
   return createPortal(
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        {/* ... Garde ton code HTML intact ... */}
         <h3 className={styles.title}>📍 Balade en cours</h3>
         
-        <div style={{ marginBottom: "20px", background: "#1e293b", padding: "15px", borderRadius: "8px" }}>
-            <p style={{ margin: "0 0 10px 0", color: "#f1f5f9" }}>
+        {/* Infos de la balade (Zéro CSS en ligne) */}
+        <div className={styles.walkDetailsBlock}>
+            <p className={styles.organizerText}>
                 <strong>Organisée par :</strong> {activeWalk.organizer.name}
             </p>
             {activeWalk.description && (
-                <p style={{ margin: 0, fontStyle: "italic", color: "#94a3b8" }}>
+                <p className={styles.descriptionText}>
                     "{activeWalk.description}"
                 </p>
             )}
         </div>
 
+        {/* Liste des participants */}
         <div className={styles.inputGroup}>
             <label>Membres présents :</label>
             {loading ? (
                 <p className={styles.infoText}>Actualisation...</p>
             ) : (
                 <div className={styles.friendsList}>
-                    <div className={styles.friendOption} style={{ cursor: "default" }}>
+                    {/* L'organisateur */}
+                    <div className={styles.participantRow}>
                         <img src={activeWalk.organizer.imageUrl || "/default-pet.png"} alt="Orga" className={styles.friendAvatar} />
-                        <span>{activeWalk.organizer.name} 👑</span>
+                        <span className={styles.friendName}>{activeWalk.organizer.name} 👑</span>
                     </div>
 
+                    {/* Les invités présents */}
                     {participants.map(invit => (
-                        <div key={invit.id} className={styles.friendOption} style={{ cursor: "default" }}>
+                        <div key={invit.id} className={styles.participantRow}>
                             <img src={invit.pet.imageUrl || "/default-pet.png"} alt={invit.pet.name} className={styles.friendAvatar} />
-                            <span>{invit.pet.name}</span>
-                            <span style={{ marginLeft: "auto", fontSize: "12px", color: "#10b981" }}>Présent(e)</span>
+                            <span className={styles.friendName}>{invit.pet.name}</span>
+                            <span className={styles.statusBadgePresent}>Présent(e)</span>
                         </div>
                     ))}
                 </div>
@@ -67,8 +67,8 @@ export default function ActiveWalkModal({ activeWalk, activePet, onClose, onEndW
             </button>
             {isOrganizer && (
                 <button 
+                  className={styles.endWalkBtn}
                   onClick={() => { onEndWalk(activeWalk.id); onClose(); }}
-                  style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "10px 15px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" }}
                 >
                     Terminer la balade
                 </button>
@@ -76,6 +76,6 @@ export default function ActiveWalkModal({ activeWalk, activePet, onClose, onEndW
         </div>
       </div>
     </div>,
-    document.body // <-- Cible de la téléportation
+    document.body
   );
 }

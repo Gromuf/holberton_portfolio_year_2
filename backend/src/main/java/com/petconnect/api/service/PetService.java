@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.petconnect.api.model.Friendship;
+import com.petconnect.api.model.InvitationStatus;
 import com.petconnect.api.model.Pet;
 import com.petconnect.api.model.User;
+import com.petconnect.api.model.WalkStatus;
 import com.petconnect.api.repository.FriendshipRepository;
 import com.petconnect.api.repository.PetRepository;
 import com.petconnect.api.repository.UserRepository;
+import com.petconnect.api.repository.WalkRepository;
 
 @Service
 public class PetService {
@@ -24,6 +27,9 @@ public class PetService {
 
 	@Autowired
 	private FriendshipRepository friendshipRepository;
+
+	@Autowired
+	private WalkRepository walkRepository;
 
 	public List<Pet> findAllPets() {
 		return petRepository.findAll();
@@ -79,8 +85,19 @@ public class PetService {
 				.filter(f -> "ACCEPTED".equals(f.getStatus()))
 				.toList();
 
-		return friendships.stream()
+		List<Pet> friends = friendships.stream()
 				.map(f -> f.getPet1().getId().equals(petId) ? f.getPet2() : f.getPet1())
 				.toList();
+		
+		for (Pet friend : friends) {
+			boolean inWalk = walkRepository.findActiveWalkByPetId(
+				friend.getId(), 
+				WalkStatus.IN_PROGRESS.name(),
+				InvitationStatus.ACCEPTED.name()
+			).isPresent();
+			
+			friend.setWalking(inWalk);
+		}
+		return friends;
 	}
 }
