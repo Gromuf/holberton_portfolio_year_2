@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "pets")
@@ -65,5 +66,6 @@ public class Pet {
 	private List<Friendship> friendshipsAsPet2;
 
 	@Transient
-    private boolean isWalking = false;
+	@JsonProperty("isWalking")
+    private Boolean isWalking = false;
 }

@@ -8,7 +8,7 @@ import CreateWalkModal from "../Walks/CreateWalkModal";
 import ActiveWalkModal from "../Walks/ActiveWalkModal"; 
 
 export default function SidebarLeft({ 
-  onAddPetClick, hasUnread, pets = [], activePet, activeWalk, createWalk, endWalk 
+  onAddPetClick, hasUnread, pets = [], activePet, activeWalk, createWalk, endWalk, messages, sendWalkMessage
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +69,8 @@ export default function SidebarLeft({
         <ActiveWalkModal 
           activeWalk={activeWalk} 
           activePet={activePet}
+          messages={messages}
+          onSendMessage={sendWalkMessage}
           onClose={() => setIsActiveModalOpen(false)} 
           onEndWalk={endWalk} 
         />

@@ -22,11 +22,7 @@ export default function MainLayout({
     socialProps.pets?.find((p) => p.id === socialProps.mySelectedPetId) ||
     socialProps.pets?.[0];
 
-  const { activeWalk, 
-    createWalk, 
-    endWalk, 
-    invitations, 
-    respondToInvitation } = useWalk(activePet?.id);
+  const { activeWalk, createWalk, endWalk, invitations, respondToInvitation, messages, sendWalkMessage } = useWalk(activePet?.id);
 
   const checkNotifs = async () => {
     try {
@@ -75,6 +71,8 @@ export default function MainLayout({
             activeWalk={activeWalk}
             createWalk={createWalk}
             endWalk={endWalk}
+            messages={messages}
+            sendWalkMessage={sendWalkMessage}
             onAddPetClick={onAddPetClick}
             hasUnread={hasUnread}
           />

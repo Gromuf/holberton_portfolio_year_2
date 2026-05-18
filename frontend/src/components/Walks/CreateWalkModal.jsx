@@ -53,7 +53,7 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
               <option value="" disabled>Choisir un de vos animaux</option>
               {myPets.map(pet => (
                 <option key={pet.id} value={pet.id}>
-                  {pet.name} {pet.walking ? "🐾 (Déjà en balade)" : ""}
+                  {pet.name} {pet.isWalking ? "🐾 (Déjà en balade)" : ""}
                 </option>
               ))}
             </select>
@@ -82,15 +82,15 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                     key={friend.id} 
                     className={styles.friendOption}
                     style={{ 
-                      opacity: friend.walking ? 0.5 : 1, 
-                      cursor: friend.walking ? "not-allowed" : "pointer" 
+                      opacity: friend.isWalking ? 0.5 : 1, // 👈 CORRECTION : isWalking
+                      cursor: friend.isWalking ? "not-allowed" : "pointer" // 👈 CORRECTION : isWalking
                     }}
                   >
                     <input 
                       type="checkbox" 
                       checked={selectedFriends.includes(friend.id)}
                       onChange={() => toggleFriend(friend.id)}
-                      disabled={friend.walking}
+                      disabled={friend.isWalking} // 👈 CORRECTION : isWalking
                     />
                     <img 
                       src={friend.imageUrl || "/default-pet.png"} 
@@ -99,7 +99,7 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
                     />
                     <span>{friend.name}</span>
                     
-                    {friend.walking && (
+                    {friend.isWalking && ( // 👈 CORRECTION : isWalking
                       <span style={{ marginLeft: "auto", fontSize: "12px", color: "#ef4444", fontWeight: "bold" }}>
                         Déjà en balade 🐾
                       </span>
@@ -119,7 +119,7 @@ export default function CreateWalkModal({ myPets = [], onClose, onSubmit }) {
             <Button 
               type="submit" 
               variant="success" 
-              disabled={!organizerId || selectedFriends.length === 0}
+              disabled={!organizerId}
             >
               Lancer la balade
             </Button>

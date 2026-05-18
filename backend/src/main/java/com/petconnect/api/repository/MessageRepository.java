@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 import com.petconnect.api.model.Message;
 import com.petconnect.api.model.Pet;
 
@@ -33,4 +34,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
 	// Optionnel : Récupérer les messages non lus entre deux pets
 	List<Message> findBySenderPetIdAndReceiverPetIdAndIsReadFalse(Long senderId, Long receiverId);
+
+	// Supprimer tous les messages entre deux pets (pour la suppression d'amitié)
+	@Modifying
+	@Transactional
+	void deleteBySenderPetIdOrReceiverPetId(Long senderPetId, Long receiverPetId);
 }

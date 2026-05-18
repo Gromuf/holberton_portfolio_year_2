@@ -4,6 +4,7 @@ import api from "../api/client";
 export function useWalk(activePetId = null) {
   const [activeWalk, setActiveWalk] = useState(null);
   const [invitations, setInvitations] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchWalkData = useCallback(async () => {
@@ -13,16 +14,26 @@ export function useWalk(activePetId = null) {
         api.get(`/walks/pet/${activePetId}/active`),
         api.get(`/walks/pet/${activePetId}/invitations`),
       ]);
-      setActiveWalk(walkRes.status === 204 ? null : walkRes.data);
+
+      const currentWalk = walkRes.status === 204 ? null : walkRes.data;
+      setActiveWalk(currentWalk);
       setInvitations(invitsRes.data);
+
+      // CORRECTION DU GET : On interroge l'endpoint GET /{walkId}/messages qui existe dans le contrôleur
+      if (currentWalk) {
+        const msgRes = await api.get(`/walks/${currentWalk.id}/messages`);
+        setMessages(msgRes.data);
+      } else {
+        setMessages([]);
+      }
     } catch (err) {
-      console.error("Erreur chargement balades", err);
+      console.error("Erreur chargement balades / messages", err);
     }
   }, [activePetId]);
 
   useEffect(() => {
     fetchWalkData();
-    const interval = setInterval(fetchWalkData, 5000);
+    const interval = setInterval(fetchWalkData, 4000);
     return () => clearInterval(interval);
   }, [fetchWalkData]);
 
@@ -57,12 +68,28 @@ export function useWalk(activePetId = null) {
     }
   };
 
+  // CORRECTION DU POST : On envoie bien sur /{walkId}/chat avec le texte brut
+  const sendWalkMessage = async (walkId, senderId, content) => {
+    try {
+      await api.post(`/walks/${walkId}/chat`, content, {
+        params: { senderId },
+        headers: { "Content-Type": "text/plain" },
+      });
+      const msgRes = await api.get(`/walks/${walkId}/messages`);
+      setMessages(msgRes.data);
+    } catch (err) {
+      console.error("Erreur envoi message balade", err);
+    }
+  };
+
   return {
     activeWalk,
     invitations,
+    messages,
     loading,
     createWalk,
     respondToInvitation,
     endWalk,
+    sendWalkMessage,
   };
 }

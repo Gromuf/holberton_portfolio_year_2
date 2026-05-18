@@ -188,3 +188,136 @@
 .cancelBtn:hover {
   color: #f1f5f9;
 }
+
+/* --- COMPLÉMENTS MESSAGERIE ÉPHÉMÈRE --- */
+
+.largeModal {
+  max-width: 750px !important; /* On élargit pour le chat */
+  width: 95% !important;
+}
+
+.walkGridContainer {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .walkGridContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatColumn {
+  display: flex;
+  flex-direction: column;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 12px;
+  height: 300px;
+}
+
+.chatLabel {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.chatMessagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+.emptyChat {
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+  margin: auto;
+  font-size: 0.9rem;
+}
+
+.chatBubbleWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+
+.chatMe {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.chatOther {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.chatSenderName {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.chatBubble {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.chatMe .chatBubble {
+  background: #10b981;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.chatOther .chatBubble {
+  background: #1e293b;
+  color: #f1f5f9;
+  border-bottom-left-radius: 2px;
+}
+
+.chatInputForm {
+  display: flex;
+  gap: 8px;
+}
+
+.chatInputField {
+  flex: 1;
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: white;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem;
+}
+
+.chatSendBtn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.chatSendBtn:hover {
+  background: #059669;
+}

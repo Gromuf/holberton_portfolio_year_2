@@ -12,6 +12,8 @@ import com.petconnect.api.model.Walk;
 @Repository
 public interface WalkRepository extends JpaRepository<Walk, Long> {
     
+    boolean existsByOrganizerId(Long organizerId);
+
     @Query(value = "SELECT DISTINCT w.* FROM walks w " +
                    "LEFT JOIN walk_invitations i ON w.id = i.walk_id " +
                    "WHERE w.status = :walkStatus " +
