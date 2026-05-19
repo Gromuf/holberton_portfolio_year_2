@@ -103,13 +103,8 @@ public class PetController {
 	@DeleteMapping("/{id}") // Endpoint pour supprimer un animal
 	public void deletePet(@PathVariable Long id) {
 		String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-		Pet pet = petRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Pet not found"));
 		
-		if (!pet.getOwner().getEmail().equals(currentUserEmail)) {
-			throw new RuntimeException("Not authorized to delete this pet");
-		}
-		petRepository.delete(pet);
+		petService.deletePet(id, currentUserEmail);
 	}
 
 	@GetMapping("/{id}/friends")

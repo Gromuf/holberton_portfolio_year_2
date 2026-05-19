@@ -3,9 +3,11 @@ package com.petconnect.api.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.petconnect.api.model.Walk;
 
@@ -24,4 +26,9 @@ public interface WalkRepository extends JpaRepository<Walk, Long> {
         @Param("walkStatus") String walkStatus,
         @Param("invStatus") String invStatus
     );
+
+    // Supprime toutes les balades créées par cet organisateur
+    @Modifying
+    @Transactional
+    void deleteByOrganizerId(Long organizerId);
 }
